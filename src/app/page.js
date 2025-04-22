@@ -2,6 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import { Playfair_Display, Cinzel, Montserrat } from "next/font/google";
+import "./shimmer.css";
+
+// Initialize the fonts
+const playfair = Playfair_Display({ subsets: ["latin"] });
+const cinzel = Cinzel({ subsets: ["latin"] });
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -10,7 +17,7 @@ export default function Home() {
   const slides = [
     {
       title: "TRAVANA",
-      subtitle: "",
+      subtitle: "Your AI Travel Companion",
       searchPlaceholder: "",
       showCircle: false,
       showSearch: false,
@@ -157,7 +164,17 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-200 text-black">
+    <main
+      className="min-h-screen text-black"
+      style={{
+        backgroundImage: "url('/vid.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+        textShadow: "1px 1px 3px rgba(0, 0, 0, 0.5)",
+      }}
+    >
       {slides.map((slide, index) => (
         <div
           key={index}
@@ -173,7 +190,52 @@ export default function Home() {
 
           <div className="flex flex-col items-center justify-center flex-grow">
             {index === 0 ? (
-              <h1 className="text-4xl font-bold">{slide.title}</h1>
+              <div className="text-center animate-fadeIn relative">
+                {/* Sparkle elements */}
+                <div className="shimmer-sparkle sparkle-1"></div>
+                <div className="shimmer-sparkle sparkle-2"></div>
+                <div className="shimmer-sparkle sparkle-3"></div>
+                <div className="shimmer-sparkle sparkle-4"></div>
+
+                <h1
+                  className={`${cinzel.className} text-8xl font-black tracking-wider mb-4 text-black shimmer-text`}
+                  style={{
+                    textShadow: "3px 3px 6px rgba(255, 255, 255, 0.7)",
+                    letterSpacing: "0.2em",
+                    transform: "scale(1.05)",
+                    WebkitTextStroke: "1px rgba(0, 0, 0, 0.3)",
+                  }}
+                >
+                  {slide.title}
+                </h1>
+                <p
+                  className={`${montserrat.className} text-2xl font-medium text-black mt-6 max-w-md mx-auto`}
+                  style={{
+                    textShadow: "1px 1px 3px rgba(255, 255, 255, 0.6)",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  {slide.subtitle}
+                </p>
+                <div className="mt-10 flex space-x-4 justify-center">
+                  <button
+                    className={`${montserrat.className} bg-black text-white px-8 py-4 rounded-full font-semibold hover:shadow-xl transform hover:-translate-y-1 transition duration-300`}
+                    style={{
+                      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)",
+                    }}
+                  >
+                    Start Journey
+                  </button>
+                  <button
+                    className={`${montserrat.className} bg-white/85 backdrop-blur-sm text-black px-8 py-4 rounded-full font-semibold hover:bg-white/95 transition duration-300 border-2 border-black`}
+                    style={{
+                      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)",
+                    }}
+                  >
+                    Learn More
+                  </button>
+                </div>
+              </div>
             ) : (
               <>
                 {slide.showCircle && (

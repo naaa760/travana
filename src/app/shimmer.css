@@ -1,0 +1,95 @@
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-text {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 45%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(0, 0, 0, 1) 55%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Add animated sparkles around the text */
+.shimmer-text::before,
+.shimmer-text::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.7);
+  opacity: 0;
+}
+
+.shimmer-text::before {
+  top: 20%;
+  left: 5%;
+  animation: sparkle 4s ease-in-out infinite;
+}
+
+.shimmer-text::after {
+  bottom: 15%;
+  right: 10%;
+  animation: sparkle 4s ease-in-out 1s infinite;
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Add more sparkle elements with pseudo-elements from additional elements */
+.shimmer-sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+}
+
+.sparkle-1 {
+  top: 10%;
+  left: 20%;
+  animation: sparkle 5s ease-in-out 0.5s infinite;
+}
+.sparkle-2 {
+  top: 60%;
+  left: 85%;
+  animation: sparkle 4s ease-in-out 1.5s infinite;
+}
+.sparkle-3 {
+  top: 80%;
+  left: 10%;
+  animation: sparkle 5s ease-in-out 2s infinite;
+}
+.sparkle-4 {
+  top: 30%;
+  left: 90%;
+  animation: sparkle 4s ease-in-out 0.7s infinite;
+}
