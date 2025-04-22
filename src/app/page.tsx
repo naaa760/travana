@@ -109,7 +109,7 @@ export default function Home() {
         <section className="container mx-auto px-4 py-16 relative">
           <div className="flex flex-col items-center">
             {/* Video Container - Smaller Size */}
-            <div className="w-full max-w-xl mb-12">
+            <div className="w-full max-w-xl mb-6">
               <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl">
                 <video
                   className="w-full h-full object-cover"
@@ -122,6 +122,13 @@ export default function Home() {
                   Your browser does not support the video tag.
                 </video>
               </div>
+            </div>
+
+            {/* Regular Straight Text */}
+            <div className="mb-10">
+              <p className="eye-catching-text text-2xl md:text-3xl text-center">
+                Try talking to me directly
+              </p>
             </div>
 
             {/* Search Bar - Silver/Green Design */}
