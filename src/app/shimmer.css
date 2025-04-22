@@ -329,3 +329,49 @@
 .flight-carousel {
   margin-bottom: 3rem;
 }
+
+/* Better styled Start Journey button with proper color */
+.start-journey-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to right, #92400e, #b45309);
+}
+
+.start-journey-btn::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 60%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.start-journey-btn:hover::after {
+  opacity: 1;
+  animation: ripple 2s linear infinite;
+}
+
+/* Enhanced button text */
+.start-journey-btn span {
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.05em;
+}
+
+@keyframes ripple {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -225,7 +225,7 @@ export default function Home() {
             <div className="shimmer-sparkle sparkle-4"></div>
 
             {/* TRAVANA Text centered in page */}
-            <div className="w-full text-center mb-8">
+            <div className="w-full text-center mb-2">
               <h1
                 className={`${cinzel.className} text-8xl font-black tracking-wider mb-4 text-black shimmer-text`}
                 style={{
@@ -238,30 +238,34 @@ export default function Home() {
                 TRAVANA
               </h1>
               <p
-                className={`${montserrat.className} text-2xl font-medium text-black mt-6 max-w-md mx-auto`}
-                style={{
-                  textShadow: "1px 1px 3px rgba(255, 255, 255, 0.6)",
-                  letterSpacing: "0.05em",
-                }}
+                className={`${montserrat.className} text-2xl text-black mb-10`}
               >
                 Your AI Travel Companion
               </p>
-              <div className="mt-10 flex space-x-4 justify-center">
+
+              {/* Centered Buttons */}
+              <div className="flex justify-center mt-8 space-x-4">
                 <button
-                  className={`${montserrat.className} bg-black text-white px-8 py-4 rounded-full font-semibold hover:shadow-xl transform hover:-translate-y-1 transition duration-300`}
-                  style={{
-                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3)",
-                  }}
                   onClick={startJourney}
+                  className="start-journey-btn px-8 py-3 rounded-full bg-gradient-to-r from-amber-800 to-amber-600 text-white font-medium text-lg tracking-wide shadow-lg border border-amber-500/30 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:ring-offset-2 focus:ring-offset-transparent"
                 >
-                  Start Journey
+                  <span className="flex items-center">
+                    <span>Start Journey</span>
+                    <svg
+                      className="ml-2 h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </span>
                 </button>
-                <button
-                  className={`${montserrat.className} bg-white/85 backdrop-blur-sm text-black px-8 py-4 rounded-full font-semibold hover:bg-white/95 transition duration-300 border-2 border-black`}
-                  style={{
-                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.2)",
-                  }}
-                >
+
+                <button className="px-8 py-3 rounded-full bg-white/20 text-black font-medium text-lg tracking-wide shadow-md border border-white/30 backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent">
                   Learn More
                 </button>
               </div>
