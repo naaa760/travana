@@ -61,10 +61,9 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Video Section */}
+          {/* Video Section - Displaying Original Video */}
           <div className="md:w-1/2 mt-12 md:mt-0 flex justify-center">
-            <div className="relative w-full max-w-md aspect-video rounded-lg overflow-hidden border border-gray-800 shadow-xl">
-              <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 via-purple-500/20 to-cyan-400/20 z-10 pointer-events-none"></div>
+            <div className="relative w-full max-w-md aspect-video rounded-lg overflow-hidden">
               <video
                 className="w-full h-full object-cover"
                 autoPlay
@@ -75,11 +74,6 @@ export default function Home() {
                 <source src="/vid.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                <p className="text-sm text-gray-300">
-                  Experience the future of voice technology
-                </p>
-              </div>
             </div>
           </div>
         </div>
