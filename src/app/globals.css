@@ -105,6 +105,46 @@ h1 {
   transform: scale(1.02);
 }
 
+.text-shine {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.9) 25%,
+    white 50%,
+    rgba(255, 255, 255, 0.9) 75%,
+    rgba(255, 255, 255, 0.8) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% auto;
+  animation: shine 5s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.pulse-glow {
+  animation: pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
 @layer utilities {
   .animate-spin-slow {
     animation: spin 8s linear infinite;
@@ -181,4 +221,12 @@ h1 {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Adding the main-gradient class to match the Shelve design */
+.main-gradient {
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #ffffff;
 }

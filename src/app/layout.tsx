@@ -6,7 +6,7 @@ import Link from "next/link";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Deepgram - Voice AI Platform",
+  title: "Travana - Voice AI Platform",
   description: "The Voice AI platform for enterprise use cases",
 };
 
@@ -27,7 +27,8 @@ export default function RootLayout({
                     href="/"
                     className="text-2xl font-bold mr-10 text-white"
                   >
-                    <span className="text-sky-400">Deep</span>gram
+                    <span className="text-sky-400">Tra</span>
+                    <span className="text-lime-400">vana</span>
                   </Link>
 
                   <div className="hidden md:flex space-x-8">

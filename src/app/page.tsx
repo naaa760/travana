@@ -23,7 +23,7 @@ export default function Home() {
                   className="inline-flex items-center px-4 py-2 rounded-full border border-sky-400 text-sky-400 hover:bg-sky-400/10 transition-colors"
                 >
                   <span className="text-shadow-sm">
-                    Introducing Deepgram&apos;s Voice Agent API
+                    Introducing Travana&apos;s Voice Agent API
                   </span>
                   <svg
                     className="ml-2 w-4 h-4"
@@ -42,17 +42,13 @@ export default function Home() {
                 </Link>
               </div>
 
-              <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight leading-tight">
-                The{" "}
-                <span className="gradient-text lime-glow text-pop">
-                  Voice AI
-                </span>{" "}
-                <span className="highlight-text">platform</span> for enterprise
-                use cases
+              <h1 className="font-normal main-gradient text-3xl sm:text-4xl lg:text-5xl tracking-tight leading-tight mb-6">
+                The <span className="gradient-text">Voice AI</span> platform for
+                enterprise use cases
               </h1>
 
               <p className="text-lg text-gray-200 mb-8 font-light">
-                Deepgram&apos;s voice AI platform provides APIs for
+                Travana&apos;s voice AI platform provides APIs for
                 <span className="blue-accent font-medium"> speech-to-text</span>
                 ,
                 <span className="text-lime-400 font-medium">
@@ -68,7 +64,7 @@ export default function Home() {
                 <span className="text-lime-300 font-semibold">
                   200,000+
                 </span>{" "}
-                developers use Deepgram to build voice AI products and features.
+                developers use Travana to build voice AI products and features.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -89,7 +85,7 @@ export default function Home() {
 
             {/* Video Section - Displaying Original Video */}
             <div className="md:w-1/2 mt-12 md:mt-0 flex justify-center float-animation">
-              <div className="relative w-full max-w-md aspect-video rounded-lg overflow-hidden shadow-2xl border border-sky-900/30">
+              <div className="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden shadow-2xl">
                 <video
                   className="w-full h-full object-cover"
                   autoPlay
@@ -106,7 +102,10 @@ export default function Home() {
         </div>
 
         {/* Features Section */}
-        <div className="container mx-auto px-4 py-16 border-t border-gray-800">
+        <div className="container mx-auto px-4 py-16">
+          <h2 className="font-normal main-gradient text-2xl sm:text-3xl lg:text-4xl mb-12 text-center">
+            Transforming voice interactions
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-6 rounded-lg bg-gray-900/80 backdrop-blur-sm border border-gray-800 hover:border-sky-500/50 hover:shadow-lg hover:shadow-sky-500/10 transition-all">
               <div className="w-12 h-12 rounded-full bg-sky-500/20 flex items-center justify-center mb-4">
