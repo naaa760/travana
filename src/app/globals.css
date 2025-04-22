@@ -230,3 +230,37 @@ html {
   line-height: 1.2;
   color: #ffffff;
 }
+
+/* Search bar effects */
+.search-gradient-border {
+  background: linear-gradient(
+    90deg,
+    rgba(203, 213, 225, 0.5) 0%,
+    rgba(132, 204, 22, 0.8) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1.5px; /* Border thickness */
+  pointer-events: none;
+}
+
+.search-icon-pulse {
+  animation: search-pulse 2s infinite;
+}
+
+@keyframes search-pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+}
