@@ -375,3 +375,70 @@
     transform: rotate(360deg);
   }
 }
+
+/* Add responsive styles to shimmer.css */
+
+/* Responsive text sizes */
+@media (max-width: 640px) {
+  .shimmer-text {
+    font-size: 3rem !important;
+    letter-spacing: 0.1em !important;
+  }
+
+  /* Reduce sparkle size on mobile */
+  .shimmer-sparkle {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+/* Improved mobile card container */
+@media (max-width: 640px) {
+  .flight-cards-container {
+    gap: 10px;
+    padding: 10px 2px;
+  }
+
+  .flight-cards-container > div {
+    border-radius: 0.75rem;
+  }
+
+  /* Better button spacing on mobile */
+  .flex.space-x-4.sm\:space-x-2 > button {
+    margin: 0 4px;
+  }
+
+  /* Make sure slider navigation doesn't get cut off */
+  .flight-carousel {
+    margin: 0 12px;
+  }
+
+  /* Improve dot indicators visibility on mobile */
+  .fixed.bottom-8 {
+    bottom: 1rem;
+  }
+
+  .fixed.bottom-8 button {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* Better Start Journey button on mobile */
+@media (max-width: 640px) {
+  .start-journey-btn {
+    min-width: 140px;
+  }
+}
+
+/* Optimize horizontal slider for mobile */
+@media (max-width: 640px) {
+  .xs\:w-48 {
+    width: 12rem;
+  }
+
+  .xs\:text-5xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}

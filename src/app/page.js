@@ -227,7 +227,7 @@ export default function Home() {
             {/* TRAVANA Text centered in page */}
             <div className="w-full text-center mb-2">
               <h1
-                className={`${cinzel.className} text-8xl font-black tracking-wider mb-4 text-black shimmer-text`}
+                className={`${cinzel.className} text-8xl md:text-8xl sm:text-6xl xs:text-5xl font-black tracking-wider mb-4 text-black shimmer-text`}
                 style={{
                   textShadow: "3px 3px 6px rgba(255, 255, 255, 0.7)",
                   letterSpacing: "0.2em",
@@ -238,21 +238,21 @@ export default function Home() {
                 TRAVANA
               </h1>
               <p
-                className={`${montserrat.className} text-2xl text-black mb-10`}
+                className={`${montserrat.className} text-2xl sm:text-xl text-black mb-10`}
               >
                 Your AI Travel Companion
               </p>
 
-              {/* Centered Buttons */}
-              <div className="flex justify-center mt-8 space-x-4">
+              {/* Improved responsive button container */}
+              <div className="flex flex-wrap justify-center mt-8 space-x-4 sm:space-x-2 px-4">
                 <button
                   onClick={startJourney}
-                  className="start-journey-btn px-8 py-3 rounded-full bg-gradient-to-r from-amber-800 to-amber-600 text-white font-medium text-lg tracking-wide shadow-lg border border-amber-500/30 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:ring-offset-2 focus:ring-offset-transparent"
+                  className="start-journey-btn px-8 py-3 sm:px-6 sm:py-2.5 rounded-full bg-gradient-to-r from-amber-800 to-amber-600 text-white font-medium text-lg sm:text-base tracking-wide shadow-lg border border-amber-500/30 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:ring-offset-2 focus:ring-offset-transparent"
                 >
                   <span className="flex items-center">
                     <span>Start Journey</span>
                     <svg
-                      className="ml-2 h-5 w-5"
+                      className="ml-2 h-5 w-5 sm:h-4 sm:w-4"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
@@ -265,7 +265,7 @@ export default function Home() {
                   </span>
                 </button>
 
-                <button className="px-8 py-3 rounded-full bg-white/20 text-black font-medium text-lg tracking-wide shadow-md border border-white/30 backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent">
+                <button className="px-8 py-3 sm:px-6 sm:py-2.5 rounded-full bg-white/20 text-black font-medium text-lg sm:text-base tracking-wide shadow-md border border-white/30 backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent">
                   Learn More
                 </button>
               </div>
@@ -330,12 +330,12 @@ export default function Home() {
                   className="w-screen h-full flex flex-col items-center justify-center relative"
                 >
                   {slide.showHeader && (
-                    <div className="absolute top-0 left-0 right-0 text-center py-6 z-10">
-                      <div className="text-xl font-bold mb-2">
+                    <div className="absolute top-0 left-0 right-0 text-center py-4 z-10">
+                      <div className="text-lg sm:text-base font-medium mb-1">
                         {slide.route}
                       </div>
                       {slide.date && (
-                        <div className="text-base text-white/80 mb-6">
+                        <div className="text-sm sm:text-xs text-gray-200">
                           {slide.date}
                         </div>
                       )}
@@ -344,7 +344,7 @@ export default function Home() {
 
                   <div
                     className={`flex flex-col items-center justify-center w-full max-w-xl px-4 ${
-                      slide.showHeader ? "mt-28" : ""
+                      slide.showHeader ? "mt-16 sm:mt-14" : ""
                     }`}
                   >
                     {slide.showCircle && (
@@ -384,21 +384,21 @@ export default function Home() {
                     )}
 
                     {slide.showDetailedResults && (
-                      <div className="mt-4 w-full px-4 max-w-md mx-auto">
+                      <div className="mt-4 w-full px-2 sm:px-1 max-w-md mx-auto">
                         <div className="text-center mb-4">
                           <h2
-                            className={`${montserrat.className} text-2xl font-semibold text-slate-800 mb-1`}
+                            className={`${montserrat.className} text-2xl sm:text-xl font-semibold text-slate-800 mb-1`}
                           >
                             Cheapest Flights
                           </h2>
-                          <div className="inline-block bg-indigo-600/80 backdrop-blur-sm text-white text-sm px-4 py-1 rounded-full mb-3 shadow-md">
+                          <div className="inline-block bg-indigo-600/80 backdrop-blur-sm text-white text-sm sm:text-xs px-4 py-1 rounded-full mb-3 shadow-md">
                             Cheapest Flights
                           </div>
                         </div>
 
-                        {/* Horizontal scrollable flight cards */}
+                        {/* Responsive flight carousel */}
                         <div className="relative flight-carousel">
-                          {/* Left scroll button */}
+                          {/* Left scroll button - smaller on mobile */}
                           <button
                             onClick={() => {
                               const container = document.querySelector(
@@ -409,13 +409,16 @@ export default function Home() {
                                 behavior: "smooth",
                               });
                             }}
-                            className="absolute -left-3 top-1/2 transform -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-white/30 transition-all active:scale-95"
+                            className="absolute -left-1 sm:-left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm p-2 sm:p-1.5 rounded-full shadow-md hover:bg-white/30 transition-all active:scale-95"
                             aria-label="Scroll left"
                           >
-                            <ChevronLeft size={16} className="text-slate-800" />
+                            <ChevronLeft
+                              size={16}
+                              className="text-slate-800 sm:w-4 sm:h-4"
+                            />
                           </button>
 
-                          {/* Right scroll button */}
+                          {/* Right scroll button - smaller on mobile */}
                           <button
                             onClick={() => {
                               const container = document.querySelector(
@@ -426,34 +429,34 @@ export default function Home() {
                                 behavior: "smooth",
                               });
                             }}
-                            className="absolute -right-3 top-1/2 transform -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-white/30 transition-all active:scale-95"
+                            className="absolute -right-1 sm:-right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm p-2 sm:p-1.5 rounded-full shadow-md hover:bg-white/30 transition-all active:scale-95"
                             aria-label="Scroll right"
                           >
                             <ChevronRight
                               size={16}
-                              className="text-slate-800"
+                              className="text-slate-800 sm:w-4 sm:h-4"
                             />
                           </button>
 
-                          {/* Scrollable container with better spacing */}
-                          <div className="flight-cards-container flex overflow-x-auto hide-scrollbar py-2 px-1 snap-x gap-3">
-                            {/* Flight Option 1 */}
-                            <div className="flex-shrink-0 w-64 bg-amber-800/40 backdrop-blur-sm rounded-xl overflow-hidden shadow-md border border-amber-500/20 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 snap-center">
-                              <div className="p-4">
+                          {/* Responsive card container */}
+                          <div className="flight-cards-container flex overflow-x-auto hide-scrollbar py-2 px-1 snap-x gap-3 sm:gap-2">
+                            {/* Make flight cards responsive - first card */}
+                            <div className="flex-shrink-0 w-64 sm:w-56 xs:w-48 bg-amber-800/40 backdrop-blur-sm rounded-xl overflow-hidden shadow-md border border-amber-500/20 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 snap-center">
+                              <div className="p-4 sm:p-3">
                                 <div className="flex justify-between items-start">
                                   <div>
                                     <div className="flex items-center">
-                                      <div className="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
-                                      <span className="font-bold text-lg text-white">
+                                      <div className="w-4 h-4 sm:w-3 sm:h-3 bg-blue-500 rounded-full mr-2"></div>
+                                      <span className="font-bold text-lg sm:text-base text-white">
                                         4:30 PM
                                       </span>
                                     </div>
-                                    <div className="text-xs text-amber-100/90 ml-6 mt-0.5">
+                                    <div className="text-xs text-amber-100/90 ml-6 sm:ml-5 mt-0.5">
                                       Indigo
                                     </div>
                                   </div>
                                   <div className="text-right">
-                                    <div className="font-bold text-white">
+                                    <div className="font-bold text-white text-lg sm:text-base">
                                       4 hr 55 min
                                     </div>
                                     <div className="text-xs text-amber-100/90">
@@ -463,14 +466,14 @@ export default function Home() {
                                 </div>
                                 <div className="flex justify-between mt-3 pt-2 border-t border-amber-500/20 items-center">
                                   <div className="flex items-center space-x-1">
-                                    <div className="text-xs text-amber-100/90">
+                                    <div className="text-xs sm:text-[10px] text-amber-100/90">
                                       CO₂
                                     </div>
-                                    <div className="text-xs font-medium text-white">
+                                    <div className="text-xs sm:text-[10px] font-medium text-white">
                                       140 kg
                                     </div>
                                   </div>
-                                  <div className="text-xs text-amber-100/90">
+                                  <div className="text-xs sm:text-[10px] text-amber-100/90">
                                     Avg emissions ·{" "}
                                     <span className="font-bold text-amber-200">
                                       ₹679
@@ -602,14 +605,6 @@ export default function Home() {
                                 </div>
                               </div>
                             </div>
-                          </div>
-
-                          {/* Card pagination dots */}
-                          <div className="flex justify-center space-x-1 mt-2">
-                            <div className="w-2 h-2 rounded-full bg-white"></div>
-                            <div className="w-2 h-2 rounded-full bg-white/40"></div>
-                            <div className="w-2 h-2 rounded-full bg-white/40"></div>
-                            <div className="w-2 h-2 rounded-full bg-white/40"></div>
                           </div>
                         </div>
                       </div>
