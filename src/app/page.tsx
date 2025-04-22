@@ -90,7 +90,6 @@ export default function Home() {
             {/* Video Section - Displaying Original Video */}
             <div className="md:w-1/2 mt-12 md:mt-0 flex justify-center float-animation">
               <div className="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden shadow-2xl">
-                <div className="absolute inset-0 bg-gradient-to-tr from-slate-800/20 via-transparent to-lime-600/20"></div>
                 <video
                   className="w-full h-full object-cover"
                   autoPlay
@@ -102,90 +101,6 @@ export default function Home() {
                   Your browser does not support the video tag.
                 </video>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Features Section */}
-        <div className="container mx-auto px-4 py-16">
-          <h2 className="font-normal main-gradient text-2xl sm:text-3xl lg:text-4xl mb-12 text-center">
-            <span className="silver-shine">Transforming</span> voice
-            interactions
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6 rounded-lg bg-gray-900/80 backdrop-blur-sm border border-gray-800 hover:border-slate-500/50 hover:shadow-lg hover:shadow-slate-500/10 transition-all">
-              <div className="w-12 h-12 rounded-full bg-slate-500/20 flex items-center justify-center mb-4">
-                <svg
-                  className="w-6 h-6 text-slate-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-slate-300">
-                Speech-to-Text
-              </h3>
-              <p className="text-gray-300 font-light">
-                Convert spoken words into written text with high accuracy and in
-                real-time.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-lg bg-gray-900/80 backdrop-blur-sm border border-gray-800 hover:border-lime-500/50 hover:shadow-lg hover:shadow-lime-500/10 transition-all">
-              <div className="w-12 h-12 rounded-full bg-lime-500/20 flex items-center justify-center mb-4">
-                <svg
-                  className="w-6 h-6 text-lime-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-lime-300">
-                Text-to-Speech
-              </h3>
-              <p className="text-gray-300 font-light">
-                Generate natural-sounding speech from text with multiple voices
-                and languages.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-lg bg-gray-900/80 backdrop-blur-sm border border-gray-800 hover:border-slate-500/50 hover:shadow-lg hover:shadow-slate-500/10 transition-all">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-lime-500/20 to-slate-500/20 flex items-center justify-center mb-4">
-                <svg
-                  className="w-6 h-6 text-slate-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-slate-300">
-                Voice Agents
-              </h3>
-              <p className="text-gray-300 font-light">
-                Create intelligent voice agents that can understand, process,
-                and respond to human speech.
-              </p>
             </div>
           </div>
         </div>
