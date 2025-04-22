@@ -27,13 +27,13 @@ export default function RootLayout({
                     href="/"
                     className="text-2xl font-bold mr-10 text-white"
                   >
-                    <span className="text-sky-400">Tra</span>
+                    <span className="silver-shine">Tra</span>
                     <span className="text-lime-400">vana</span>
                   </Link>
 
                   <div className="hidden md:flex space-x-8">
                     <div className="relative group">
-                      <button className="flex items-center text-gray-200 hover:text-sky-400 transition-colors">
+                      <button className="flex items-center text-gray-200 hover:text-slate-300 transition-colors">
                         Products
                         <svg
                           className="ml-1 w-4 h-4"
@@ -52,7 +52,7 @@ export default function RootLayout({
                     </div>
 
                     <div className="relative group">
-                      <button className="flex items-center text-gray-200 hover:text-sky-400 transition-colors">
+                      <button className="flex items-center text-gray-200 hover:text-slate-300 transition-colors">
                         Solutions
                         <svg
                           className="ml-1 w-4 h-4"
@@ -110,7 +110,7 @@ export default function RootLayout({
 
                     <Link
                       href="/enterprise"
-                      className="text-gray-200 hover:text-sky-400 transition-colors"
+                      className="text-gray-200 hover:text-slate-300 transition-colors"
                     >
                       Enterprise
                     </Link>
@@ -125,7 +125,7 @@ export default function RootLayout({
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  <button className="p-2 text-gray-200 hover:text-sky-400 transition-colors">
+                  <button className="p-2 text-gray-200 hover:text-slate-300 transition-colors">
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -143,7 +143,7 @@ export default function RootLayout({
 
                   <Link
                     href="/login"
-                    className="text-gray-200 hover:text-sky-400 transition-colors"
+                    className="text-gray-200 hover:text-slate-300 transition-colors"
                   >
                     Log in
                   </Link>
@@ -157,7 +157,7 @@ export default function RootLayout({
 
                   <Link
                     href="/signup"
-                    className="px-5 py-2 bg-gradient-to-r from-sky-500 to-lime-500 text-white rounded-full hover:shadow-lg hover:shadow-sky-500/25 transition-all btn-glow"
+                    className="shimmer-effect px-5 py-2 bg-gradient-to-r from-slate-700 to-lime-600 text-white rounded-full hover:shadow-lg hover:shadow-lime-500/25 transition-all btn-glow"
                   >
                     Sign Up Free
                   </Link>

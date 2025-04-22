@@ -9,9 +9,9 @@
   --lime-green: #84cc16;
   --lime-green-bright: #a3e635;
   --lime-green-dark: #65a30d;
-  --sky-blue: #0ea5e9;
-  --light-blue: #38bdf8;
-  --blue-glow: rgba(56, 189, 248, 0.5);
+  --silver-light: #f1f5f9;
+  --silver: #cbd5e1;
+  --silver-dark: #94a3b8;
 }
 
 @theme inline {
@@ -62,7 +62,7 @@ h1 {
 .gradient-text {
   background: linear-gradient(
     to right,
-    var(--light-blue),
+    var(--silver-light),
     var(--lime-green-bright)
   );
   -webkit-background-clip: text;
@@ -75,25 +75,8 @@ h1 {
   text-shadow: 0 0 15px rgba(163, 230, 53, 0.6);
 }
 
-.blue-accent {
-  color: var(--light-blue);
-}
-
-.highlight-text {
-  position: relative;
-  display: inline-block;
-}
-
-.highlight-text::after {
-  content: "";
-  position: absolute;
-  bottom: 0.1em;
-  left: 0;
-  height: 0.2em;
-  width: 100%;
-  background: linear-gradient(to right, var(--light-blue), transparent);
-  z-index: -1;
-  opacity: 0.4;
+.silver-accent {
+  color: var(--silver-light);
 }
 
 .text-pop {
@@ -105,22 +88,22 @@ h1 {
   transform: scale(1.02);
 }
 
-.text-shine {
+.silver-shine {
   position: relative;
   display: inline-block;
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.8) 0%,
-    rgba(255, 255, 255, 0.9) 25%,
-    white 50%,
-    rgba(255, 255, 255, 0.9) 75%,
-    rgba(255, 255, 255, 0.8) 100%
+    #94a3b8 0%,
+    #e2e8f0 25%,
+    #f8fafc 50%,
+    #e2e8f0 75%,
+    #94a3b8 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   background-size: 200% auto;
-  animation: shine 5s linear infinite;
+  animation: shine 3s linear infinite;
 }
 
 @keyframes shine {
@@ -132,16 +115,33 @@ h1 {
   }
 }
 
-.pulse-glow {
-  animation: pulse 3s ease-in-out infinite alternate;
+.shimmer-effect {
+  position: relative;
+  overflow: hidden;
 }
 
-@keyframes pulse {
+.shimmer-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
   0% {
-    opacity: 0.1;
+    left: -100%;
   }
   100% {
-    opacity: 0.3;
+    left: 200%;
   }
 }
 
@@ -195,7 +195,7 @@ h1 {
   inset: -1px;
   border-radius: 9999px;
   padding: 1px;
-  background: linear-gradient(to right, var(--sky-blue), var(--lime-green));
+  background: linear-gradient(to right, var(--silver), var(--lime-green));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -205,7 +205,7 @@ h1 {
 
 /* Button effects */
 .btn-glow:hover {
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 15px rgba(163, 230, 53, 0.5);
 }
 
 /* For a more dynamic navbar on scroll */
@@ -223,7 +223,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Adding the main-gradient class to match the Shelve design */
+/* Main gradient class to match the Shelve design */
 .main-gradient {
   letter-spacing: -0.025em;
   font-weight: 500;

@@ -20,7 +20,7 @@ export default function Home() {
               <div className="mb-8">
                 <Link
                   href="/voice-agent-api"
-                  className="inline-flex items-center px-4 py-2 rounded-full border border-sky-400 text-sky-400 hover:bg-sky-400/10 transition-colors"
+                  className="inline-flex items-center px-4 py-2 rounded-full border border-lime-400 text-lime-400 hover:bg-lime-400/10 transition-colors"
                 >
                   <span className="text-shadow-sm">
                     Introducing Travana&apos;s Voice Agent API
@@ -43,20 +43,24 @@ export default function Home() {
               </div>
 
               <h1 className="font-normal main-gradient text-3xl sm:text-4xl lg:text-5xl tracking-tight leading-tight mb-6">
-                The <span className="gradient-text">Voice AI</span> platform for
-                enterprise use cases
+                The <span className="gradient-text lime-glow">Voice AI</span>{" "}
+                platform for
+                <span className="silver-shine"> enterprise use cases</span>
               </h1>
 
               <p className="text-lg text-gray-200 mb-8 font-light">
                 Travana&apos;s voice AI platform provides APIs for
-                <span className="blue-accent font-medium"> speech-to-text</span>
+                <span className="silver-accent font-medium">
+                  {" "}
+                  speech-to-text
+                </span>
                 ,
                 <span className="text-lime-400 font-medium">
                   {" "}
                   text-to-speech
                 </span>
                 , and full
-                <span className="blue-accent font-medium">
+                <span className="silver-accent font-medium">
                   {" "}
                   speech-to-speech
                 </span>{" "}
@@ -70,7 +74,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/try-free"
-                  className="px-6 py-3 bg-gradient-to-r from-sky-500 to-sky-600 text-white font-medium rounded-md hover:shadow-lg hover:shadow-sky-500/20 transition-all btn-glow text-center"
+                  className="shimmer-effect px-6 py-3 bg-gradient-to-r from-slate-700 to-slate-800 text-white font-medium rounded-md hover:shadow-lg hover:shadow-lime-500/20 transition-all btn-glow text-center"
                 >
                   Try It Free
                 </Link>
@@ -86,6 +90,7 @@ export default function Home() {
             {/* Video Section - Displaying Original Video */}
             <div className="md:w-1/2 mt-12 md:mt-0 flex justify-center float-animation">
               <div className="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-tr from-slate-800/20 via-transparent to-lime-600/20"></div>
                 <video
                   className="w-full h-full object-cover"
                   autoPlay
@@ -104,13 +109,14 @@ export default function Home() {
         {/* Features Section */}
         <div className="container mx-auto px-4 py-16">
           <h2 className="font-normal main-gradient text-2xl sm:text-3xl lg:text-4xl mb-12 text-center">
-            Transforming voice interactions
+            <span className="silver-shine">Transforming</span> voice
+            interactions
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6 rounded-lg bg-gray-900/80 backdrop-blur-sm border border-gray-800 hover:border-sky-500/50 hover:shadow-lg hover:shadow-sky-500/10 transition-all">
-              <div className="w-12 h-12 rounded-full bg-sky-500/20 flex items-center justify-center mb-4">
+            <div className="p-6 rounded-lg bg-gray-900/80 backdrop-blur-sm border border-gray-800 hover:border-slate-500/50 hover:shadow-lg hover:shadow-slate-500/10 transition-all">
+              <div className="w-12 h-12 rounded-full bg-slate-500/20 flex items-center justify-center mb-4">
                 <svg
-                  className="w-6 h-6 text-sky-400"
+                  className="w-6 h-6 text-slate-300"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -123,7 +129,7 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-sky-300">
+              <h3 className="text-xl font-semibold mb-2 text-slate-300">
                 Speech-to-Text
               </h3>
               <p className="text-gray-300 font-light">
@@ -157,10 +163,10 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="p-6 rounded-lg bg-gray-900/80 backdrop-blur-sm border border-gray-800 hover:border-sky-500/50 hover:shadow-lg hover:shadow-sky-500/10 transition-all">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-lime-500/20 to-sky-500/20 flex items-center justify-center mb-4">
+            <div className="p-6 rounded-lg bg-gray-900/80 backdrop-blur-sm border border-gray-800 hover:border-slate-500/50 hover:shadow-lg hover:shadow-slate-500/10 transition-all">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-lime-500/20 to-slate-500/20 flex items-center justify-center mb-4">
                 <svg
-                  className="w-6 h-6 text-sky-400"
+                  className="w-6 h-6 text-slate-300"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -173,7 +179,7 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-sky-300">
+              <h3 className="text-xl font-semibold mb-2 text-slate-300">
                 Voice Agents
               </h3>
               <p className="text-gray-300 font-light">
