@@ -103,7 +103,8 @@ h1 {
   background-clip: text;
   color: transparent;
   background-size: 200% auto;
-  animation: shine 3s linear infinite;
+  animation: shine 5s linear infinite;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 @keyframes shine {
@@ -346,4 +347,19 @@ html {
     var(--lime-green),
     transparent
   );
+}
+
+/* Add these animations for the enhanced footer */
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 10s infinite;
 }
