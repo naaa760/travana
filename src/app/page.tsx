@@ -1,6 +1,27 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
+  const [textIndex, setTextIndex] = useState(0);
+  const suggestionTexts = [
+    "Try talking to me directly",
+    "You can ask me to book a flight",
+    "Search for travel destinations",
+    "Find the best flight deals",
+  ];
+
+  const nextSlide = () => {
+    setTextIndex((current) => (current + 1) % suggestionTexts.length);
+  };
+
+  const prevSlide = () => {
+    setTextIndex((current) =>
+      current === 0 ? suggestionTexts.length - 1 : current - 1
+    );
+  };
+
   return (
     <main className="min-h-screen bg-black text-white relative">
       {/* Background Image */}
@@ -124,11 +145,58 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Regular Straight Text */}
-            <div className="mb-10">
-              <p className="eye-catching-text text-2xl md:text-3xl text-center">
-                Try talking to me directly
-              </p>
+            {/* Manual Slider for Text Suggestions */}
+            <div className="mb-10 w-full max-w-lg">
+              <div className="relative flex items-center">
+                <button
+                  onClick={prevSlide}
+                  className="absolute -left-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-800 text-white border border-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-500/50"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+
+                <div className="w-full overflow-hidden h-10">
+                  <div className="text-slide-container">
+                    <p
+                      key={textIndex}
+                      className="eye-catching-text text-2xl md:text-3xl text-center slide-in"
+                    >
+                      {suggestionTexts[textIndex]}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={nextSlide}
+                  className="absolute -right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-800 text-white border border-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-500/50"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             {/* Search Bar - Silver/Green Design */}
