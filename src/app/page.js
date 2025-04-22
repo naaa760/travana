@@ -81,7 +81,7 @@ export default function Home() {
     },
     {
       title: "When do you plan on going to",
-      subtitle: "Benguluru?",
+      subtitle: "Mumbai?",
       searchPlaceholder: "Search for Cheapest Flights...",
       showCircle: true,
       showSearch: true,
@@ -91,7 +91,7 @@ export default function Home() {
     },
     {
       title: "When do you plan on going to",
-      subtitle: "Benguluru?",
+      subtitle: "Mumbai?",
       searchPlaceholder: "Search for Cheapest Flights...",
       showCircle: true,
       showSearch: true,
@@ -107,7 +107,7 @@ export default function Home() {
       showCircle: true,
       showSearch: false,
       showHeader: true,
-      route: "DEL - BLR",
+      route: "DEL - MUM",
       date: "13th April 2025",
       showResults: true,
       circleColor: "bg-gradient-circle",
@@ -119,7 +119,7 @@ export default function Home() {
       showCircle: true,
       showSearch: false,
       showHeader: true,
-      route: "DEL - BLR",
+      route: "DEL - MUM",
       date: "13th April 2025",
       showDetailedResults: true,
       circleColor: "bg-gradient-circle",
@@ -288,6 +288,29 @@ export default function Home() {
             <ChevronRight size={28} className="text-slate-800" />
           </button>
 
+          {/* Back to Home button */}
+          <button
+            onClick={() => setMainPageComplete(false)}
+            className="fixed top-6 left-6 z-50 bg-white/30 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white/50 transition-all flex items-center"
+            aria-label="Back to home"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-slate-800 mr-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
+            </svg>
+            <span className="font-medium">Home</span>
+          </button>
+
           {/* Horizontal slider container */}
           <div className="relative w-full h-screen overflow-hidden">
             <div
@@ -303,13 +326,23 @@ export default function Home() {
                   className="w-screen h-full flex flex-col items-center justify-center relative"
                 >
                   {slide.showHeader && (
-                    <div className="absolute top-4 left-0 right-0 text-center font-mono text-sm">
-                      {slide.route}
-                      {slide.date && <div>{slide.date}</div>}
+                    <div className="absolute top-0 left-0 right-0 text-center py-6 z-10">
+                      <div className="text-xl font-bold mb-2">
+                        {slide.route}
+                      </div>
+                      {slide.date && (
+                        <div className="text-base text-white/80 mb-6">
+                          {slide.date}
+                        </div>
+                      )}
                     </div>
                   )}
 
-                  <div className="flex flex-col items-center justify-center w-full max-w-xl px-4">
+                  <div
+                    className={`flex flex-col items-center justify-center w-full max-w-xl px-4 ${
+                      slide.showHeader ? "mt-28" : ""
+                    }`}
+                  >
                     {slide.showCircle && (
                       <div
                         className={`${
@@ -347,174 +380,232 @@ export default function Home() {
                     )}
 
                     {slide.showDetailedResults && (
-                      <div className="mt-4 w-[90%] max-w-xs">
-                        <h2 className="text-xl font-bold mb-4">
-                          {slide.title}
-                        </h2>
-                        {/* Flight Option 1 */}
-                        <div className="bg-white rounded-lg p-3 mb-3 shadow-sm">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <div className="flex items-center">
-                                <div className="w-6 h-6 mr-2 text-blue-600">
-                                  <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4Z"
-                                      fill="currentColor"
-                                    />
-                                  </svg>
-                                </div>
-                                <span className="font-semibold">4:30 PM</span>
-                              </div>
-                              <div className="text-xs text-gray-600 ml-8">
-                                Indigo
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="font-semibold">4 hr 55 min</div>
-                              <div className="text-xs text-gray-600">
-                                1 stop · 1 stop
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex justify-between mt-2">
-                            <div className="text-xs text-gray-600">
-                              140 kg CO2e
-                            </div>
-                            <div className="text-xs text-green-600">
-                              Avg emissions{" "}
-                              <span className="font-bold">₹679</span>
-                            </div>
+                      <div className="mt-4 w-full px-4 max-w-md mx-auto">
+                        <div className="text-center mb-4">
+                          <h2
+                            className={`${montserrat.className} text-2xl font-semibold text-slate-800 mb-1`}
+                          >
+                            Cheapest Flights
+                          </h2>
+                          <div className="inline-block bg-indigo-600/80 backdrop-blur-sm text-white text-sm px-4 py-1 rounded-full mb-3 shadow-md">
+                            Cheapest Flights
                           </div>
                         </div>
 
-                        {/* Flight Option 2 */}
-                        <div className="bg-white rounded-lg p-3 mb-3 shadow-sm">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <div className="flex items-center">
-                                <div className="w-6 h-6 mr-2 text-red-600">
-                                  <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4Z"
-                                      fill="currentColor"
-                                    />
-                                  </svg>
-                                </div>
-                                <span className="font-semibold">3:20 PM</span>
-                              </div>
-                              <div className="text-xs text-gray-600 ml-8">
-                                Air India Express
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="font-semibold">1 hr 40 min</div>
-                              <div className="text-xs text-gray-600">
-                                1 stop
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex justify-between mt-2">
-                            <div className="text-xs text-gray-600">
-                              187 kg CO2e
-                            </div>
-                            <div className="text-xs text-red-600">
-                              +36% emissions{" "}
-                              <span className="font-bold">₹700</span>
-                            </div>
-                          </div>
-                        </div>
+                        {/* Horizontal scrollable flight cards */}
+                        <div className="relative flight-carousel">
+                          {/* Left scroll button */}
+                          <button
+                            onClick={() => {
+                              const container = document.querySelector(
+                                ".flight-cards-container"
+                              );
+                              container.scrollBy({
+                                left: -280,
+                                behavior: "smooth",
+                              });
+                            }}
+                            className="absolute -left-3 top-1/2 transform -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-white/30 transition-all active:scale-95"
+                            aria-label="Scroll left"
+                          >
+                            <ChevronLeft size={16} className="text-slate-800" />
+                          </button>
 
-                        {/* Flight Option 3 */}
-                        <div className="bg-white rounded-lg p-3 mb-3 shadow-sm">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <div className="flex items-center">
-                                <div className="w-6 h-6 mr-2 text-red-600">
-                                  <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4Z"
-                                      fill="currentColor"
-                                    />
-                                  </svg>
-                                </div>
-                                <span className="font-semibold">6:55 PM</span>
-                              </div>
-                              <div className="text-xs text-gray-600 ml-8">
-                                Air India
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="font-semibold">2 hr 55 min</div>
-                              <div className="text-xs text-gray-600">
-                                2.55 min Nonstop
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex justify-between mt-2">
-                            <div className="text-xs text-gray-600">
-                              119 kg CO2e
-                            </div>
-                            <div className="text-xs text-green-600">
-                              -17% emissions{" "}
-                              <span className="font-bold">₹709</span>
-                            </div>
-                          </div>
-                          <div className="text-xs text-green-600 mt-1">
-                            Avoids as much CO2e as 1,157 trees absorb in 1 day
-                          </div>
-                        </div>
+                          {/* Right scroll button */}
+                          <button
+                            onClick={() => {
+                              const container = document.querySelector(
+                                ".flight-cards-container"
+                              );
+                              container.scrollBy({
+                                left: 280,
+                                behavior: "smooth",
+                              });
+                            }}
+                            className="absolute -right-3 top-1/2 transform -translate-y-1/2 z-10 bg-white/20 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-white/30 transition-all active:scale-95"
+                            aria-label="Scroll right"
+                          >
+                            <ChevronRight
+                              size={16}
+                              className="text-slate-800"
+                            />
+                          </button>
 
-                        {/* Flight Option 4 */}
-                        <div className="bg-white rounded-lg p-3 mb-3 shadow-sm">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <div className="flex items-center">
-                                <div className="w-6 h-6 mr-2 text-red-600">
-                                  <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4Z"
-                                      fill="currentColor"
-                                    />
-                                  </svg>
+                          {/* Scrollable container with better spacing */}
+                          <div className="flight-cards-container flex overflow-x-auto hide-scrollbar py-2 px-1 snap-x gap-3">
+                            {/* Flight Option 1 */}
+                            <div className="flex-shrink-0 w-64 bg-amber-800/40 backdrop-blur-sm rounded-xl overflow-hidden shadow-md border border-amber-500/20 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 snap-center">
+                              <div className="p-4">
+                                <div className="flex justify-between items-start">
+                                  <div>
+                                    <div className="flex items-center">
+                                      <div className="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
+                                      <span className="font-bold text-lg text-white">
+                                        4:30 PM
+                                      </span>
+                                    </div>
+                                    <div className="text-xs text-amber-100/90 ml-6 mt-0.5">
+                                      Indigo
+                                    </div>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="font-bold text-white">
+                                      4 hr 55 min
+                                    </div>
+                                    <div className="text-xs text-amber-100/90">
+                                      1 stop · 1 stop
+                                    </div>
+                                  </div>
                                 </div>
-                                <span className="font-semibold">3:30 AM</span>
-                              </div>
-                              <div className="text-xs text-gray-600 ml-8">
-                                Air India
+                                <div className="flex justify-between mt-3 pt-2 border-t border-amber-500/20 items-center">
+                                  <div className="flex items-center space-x-1">
+                                    <div className="text-xs text-amber-100/90">
+                                      CO₂
+                                    </div>
+                                    <div className="text-xs font-medium text-white">
+                                      140 kg
+                                    </div>
+                                  </div>
+                                  <div className="text-xs text-amber-100/90">
+                                    Avg emissions ·{" "}
+                                    <span className="font-bold text-amber-200">
+                                      ₹679
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="font-semibold">2 hr 45 min</div>
-                              <div className="text-xs text-gray-600">
-                                2 sts at 4 hr
+
+                            {/* Flight Option 2 */}
+                            <div className="flex-shrink-0 w-64 bg-amber-800/40 backdrop-blur-sm rounded-xl overflow-hidden shadow-md border border-amber-500/20 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 snap-center">
+                              <div className="p-4">
+                                <div className="flex justify-between items-start">
+                                  <div>
+                                    <div className="flex items-center">
+                                      <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                                      <span className="font-bold text-lg text-white">
+                                        3:20 PM
+                                      </span>
+                                    </div>
+                                    <div className="text-xs text-amber-100/90 ml-6 mt-0.5">
+                                      Air India Express
+                                    </div>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="font-bold text-white">
+                                      1 hr 40 min
+                                    </div>
+                                    <div className="text-xs text-amber-100/90">
+                                      1 stop
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex justify-between mt-3 pt-2 border-t border-amber-500/20 items-center">
+                                  <div className="flex items-center space-x-1">
+                                    <div className="text-xs text-amber-100/90">
+                                      CO₂
+                                    </div>
+                                    <div className="text-xs font-medium text-white">
+                                      187 kg
+                                    </div>
+                                  </div>
+                                  <div className="text-xs text-red-200">
+                                    +36% emissions ·{" "}
+                                    <span className="font-bold">₹700</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Flight Option 3 */}
+                            <div className="flex-shrink-0 w-64 bg-amber-800/40 backdrop-blur-sm rounded-xl overflow-hidden shadow-md border border-amber-500/20 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 snap-center">
+                              <div className="p-4">
+                                <div className="flex justify-between items-start">
+                                  <div>
+                                    <div className="flex items-center">
+                                      <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                                      <span className="font-bold text-lg text-white">
+                                        6:55 PM
+                                      </span>
+                                    </div>
+                                    <div className="text-xs text-amber-100/90 ml-6 mt-0.5">
+                                      Air India
+                                    </div>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="font-bold text-white">
+                                      2 hr 55 min
+                                    </div>
+                                    <div className="text-xs text-amber-100/90">
+                                      Nonstop
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex justify-between mt-3 pt-2 border-t border-amber-500/20 items-center">
+                                  <div className="flex items-center space-x-1">
+                                    <div className="text-xs text-amber-100/90">
+                                      CO₂
+                                    </div>
+                                    <div className="text-xs font-medium text-white">
+                                      119 kg
+                                    </div>
+                                  </div>
+                                  <div className="text-xs text-green-200">
+                                    -17% emissions ·{" "}
+                                    <span className="font-bold">₹709</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Flight Option 4 */}
+                            <div className="flex-shrink-0 w-64 bg-amber-800/40 backdrop-blur-sm rounded-xl overflow-hidden shadow-md border border-amber-500/20 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 snap-center">
+                              <div className="p-4">
+                                <div className="flex justify-between items-start">
+                                  <div>
+                                    <div className="flex items-center">
+                                      <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                                      <span className="font-bold text-lg text-white">
+                                        3:30 AM
+                                      </span>
+                                    </div>
+                                    <div className="text-xs text-amber-100/90 ml-6 mt-0.5">
+                                      Air India
+                                    </div>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="font-bold text-white">
+                                      2 hr 45 min
+                                    </div>
+                                    <div className="text-xs text-amber-100/90">
+                                      2 stops · 4 hr
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex justify-between mt-3 pt-2 border-t border-amber-500/20 items-center">
+                                  <div className="flex items-center space-x-1">
+                                    <div className="text-xs text-amber-100/90">
+                                      CO₂
+                                    </div>
+                                    <div className="text-xs font-medium text-white">
+                                      139 kg
+                                    </div>
+                                  </div>
+                                  <div className="text-xs text-green-200">
+                                    Best value ·{" "}
+                                    <span className="font-bold">₹195</span>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
-                          <div className="flex justify-between mt-2">
-                            <div className="text-xs text-gray-600">
-                              139 kg CO2e
-                            </div>
-                            <div className="text-xs text-green-600">
-                              Avg emissions{" "}
-                              <span className="font-bold">₹195</span>
-                            </div>
+
+                          {/* Card pagination dots */}
+                          <div className="flex justify-center space-x-1 mt-2">
+                            <div className="w-2 h-2 rounded-full bg-white"></div>
+                            <div className="w-2 h-2 rounded-full bg-white/40"></div>
+                            <div className="w-2 h-2 rounded-full bg-white/40"></div>
+                            <div className="w-2 h-2 rounded-full bg-white/40"></div>
                           </div>
                         </div>
                       </div>
