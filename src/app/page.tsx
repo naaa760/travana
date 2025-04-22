@@ -8,6 +8,9 @@ export default function Home() {
   const suggestionTexts = [
     "Try talking to me directly",
     "You can ask me to book a flight",
+    "I can speak in 40+ languages",
+    "Where do you want to go?",
+    "Where are you currently?",
     "Search for travel destinations",
     "Find the best flight deals",
   ];
