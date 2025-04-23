@@ -6,7 +6,6 @@ import styles from "./page.module.css";
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
   const [fadeState, setFadeState] = useState("fadeIn");
-  const [isListening, setIsListening] = useState(false);
   const [flightInfo, setFlightInfo] = useState({
     from: "DEL",
     to: "BLR",
@@ -42,12 +41,10 @@ export default function Home() {
       if (currentPage < pages.length - 1) {
         setCurrentPage((prevPage) => prevPage + 1);
         setFadeState("fadeIn");
-        setIsListening(pages[currentPage + 1]?.isListening || false);
       } else {
-        // Reset to the beginning
-        setCurrentPage(0);
+        // Reset to the beginning but skip the logo
+        setCurrentPage(1);
         setFadeState("fadeIn");
-        setIsListening(false);
       }
     }, 4000);
 
@@ -57,6 +54,12 @@ export default function Home() {
       clearTimeout(nextPageTimeout);
     };
   }, [currentPage, pages.length]);
+
+  // Function to go back to home
+  const goToHome = () => {
+    setCurrentPage(0);
+    setFadeState("fadeIn");
+  };
 
   return (
     <main className={styles.main}>
@@ -75,14 +78,18 @@ export default function Home() {
             </div>
           )}
 
-          <div className={`${styles.circleContainer} ${styles[fadeState]}`}>
+          {/* Voice circle that never fades */}
+          <div className={styles.circleContainer}>
             <div
               className={`${styles.circle} ${
-                isListening ? styles.listening : ""
+                pages[currentPage].text === "Listening..."
+                  ? styles.listening
+                  : ""
               }`}
             ></div>
           </div>
 
+          {/* Only the text fades in/out */}
           <p className={`${styles.prompt} ${styles[fadeState]}`}>
             {pages[currentPage].text}
           </p>
@@ -95,6 +102,13 @@ export default function Home() {
               readOnly
             />
           </div>
+
+          {/* Back to Home Button - only show if not on home page */}
+          {currentPage > 0 && (
+            <button onClick={goToHome} className={styles.homeButton}>
+              Back to Home
+            </button>
+          )}
         </div>
       )}
     </main>
