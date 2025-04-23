@@ -342,24 +342,25 @@ export default function Home() {
           {/* Message container with fixed positioning */}
           {isConversationActive && (
             <div className={styles.messagesContainer}>
-              {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`${styles.messageCard} ${
-                    msg.type === "user"
-                      ? styles.userMessage
-                      : styles.assistantMessage
-                  } ${msg.isError ? styles.errorMessage : ""}`}
-                >
-                  <div className={styles.messageContent}>{msg.content}</div>
-                  <div className={styles.messageTime}>
-                    {msg.timestamp.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+              {/* Filter to only show assistant messages */}
+              {messages
+                .filter((msg) => msg.type === "assistant")
+                .map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`${styles.messageCard} ${
+                      styles.assistantMessage
+                    } ${msg.isError ? styles.errorMessage : ""}`}
+                  >
+                    <div className={styles.messageContent}>{msg.content}</div>
+                    <div className={styles.messageTime}>
+                      {msg.timestamp.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
               <div ref={messagesEndRef} />
             </div>
           )}

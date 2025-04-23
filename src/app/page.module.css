@@ -132,17 +132,17 @@
 
 .messagesContainer {
   position: fixed;
-  top: 350px; /* Below the circle */
+  top: 450px; /* Increased further to eliminate any overlap with the circle */
   bottom: 100px; /* Above the search bar */
   left: 0;
   right: 0;
-  width: 90%;
-  max-width: 600px;
+  width: 85%; /* Slightly narrower container */
+  max-width: 500px;
   margin: 0 auto;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px; /* Moderate spacing between messages */
   padding: 0 10px;
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -346,7 +346,7 @@
   }
 
   .messagesContainer {
-    top: 300px;
+    top: 380px; /* Adjusted for medium screens */
   }
 
   .listeningText {
@@ -367,7 +367,7 @@
   }
 
   .messagesContainer {
-    top: 260px;
+    top: 350px; /* Adjusted for smaller screens */
   }
 
   .searchBarContainer {
@@ -389,6 +389,10 @@
   .listeningText {
     bottom: -30px;
     font-size: 0.9rem;
+  }
+
+  .messagesContainer {
+    top: 300px; /* Adjusted for short screens */
   }
 }
 
@@ -418,19 +422,20 @@
 }
 
 .messageCard {
-  padding: 14px 18px;
-  border-radius: 18px;
-  max-width: 80%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 90%; /* Keep messages from getting too wide */
+  margin: 0 auto; /* Center the messages */
   position: relative;
   animation: messageAppear 0.3s ease-out forwards;
   transform-origin: bottom;
+  text-align: center;
+  padding: 3px 0; /* Reduced vertical padding */
 }
 
 .messageContent {
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 0.9rem; /* Smaller text */
+  line-height: 1.4; /* Tighter line height */
   white-space: pre-wrap;
+  color: #333;
 }
 
 .messageTime {
@@ -438,25 +443,20 @@
   opacity: 0.7;
   text-align: right;
   margin-top: 4px;
+  display: none; /* Hide the timestamp */
 }
 
 .userMessage {
-  align-self: flex-end;
-  background: linear-gradient(135deg, #9966ff 0%, #6644ff 100%);
-  color: white;
-  border-bottom-right-radius: 4px;
+  color: #6644ff;
+  font-weight: 500;
+  margin-bottom: 8px;
 }
 
 .assistantMessage {
-  align-self: flex-start;
-  background: white;
   color: #333;
-  border-bottom-left-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .errorMessage {
-  background: #ffe0e0;
   color: #d30000;
 }
 
