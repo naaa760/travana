@@ -276,6 +276,21 @@ export default function Home() {
     }
   };
 
+  // Update the useEffect that handles listening state in Page.jsx
+  useEffect(() => {
+    // Make the circle change more immediate with direct DOM manipulation
+    const circle = document.querySelector(`.${styles.circle}`);
+    if (circle) {
+      if (isListening) {
+        circle.classList.add(styles.listening);
+        circle.style.transition = "all 0.15s linear";
+      } else {
+        circle.classList.remove(styles.listening);
+        circle.style.transition = "all 0.3s linear";
+      }
+    }
+  }, [isListening, styles.circle, styles.listening]);
+
   return (
     <main className={styles.main}>
       {pages[currentPage].isLogo && !isConversationActive ? (
@@ -285,11 +300,11 @@ export default function Home() {
       ) : (
         <div className={styles.contentContainer}>
           {/* Top section for flight info */}
-          {(pages[currentPage].showFlightCode || isConversationActive) && (
+          {pages[currentPage].showFlightCode && !isConversationActive && (
             <div className={styles.flightCodeContainer}>
               <div className={styles.flightCode}>
                 {flightInfo.from} - {flightInfo.to}
-                {(pages[currentPage].showDate || isConversationActive) && (
+                {pages[currentPage].showDate && (
                   <div className={styles.flightDate}>{flightInfo.date}</div>
                 )}
               </div>

@@ -115,7 +115,7 @@ export default function VoiceRecognition({
 
         analyser.getByteTimeDomainData(dataArray); // Get waveform data
 
-        // Calculate RMS power
+        // Calculate RMS power - more accurate for voice detection
         let sumSquares = 0;
         for (let i = 0; i < bufferLength; i++) {
           // Convert from 0-255 to -1 to 1
@@ -127,33 +127,29 @@ export default function VoiceRecognition({
         // Convert to dB for easier thresholding
         const db = 20 * Math.log10(rms);
 
-        // Threshold in dB - adjust as needed
-        // -50 dB is very quiet, -30 dB is normal speech, -10 dB is loud
-        const threshold = -35;
+        // Use a higher threshold to avoid false positives
+        // -35 dB might pick up background noise, so let's use -30 dB
+        const threshold = -30;
 
         if (db > threshold) {
-          // Voice detected
-          voiceDetectedCount++;
-          silenceCount = 0;
-
-          // Only turn on blue after 2 consistent readings of voice (reduces false positives)
-          if (voiceDetectedCount >= 2 && !isRecording) {
+          // Voice detected - turn blue IMMEDIATELY
+          if (!isRecording) {
             setIsRecording(true);
           }
+
+          // Reset silence counter
+          silenceCount = 0;
+          voiceDetectedCount++;
         } else {
-          // No voice
+          // No voice detected
           silenceCount++;
           voiceDetectedCount = 0;
 
-          // Only turn off blue after 30 consistent readings of silence
-          // (about 0.5 seconds at 60fps, handles pauses while speaking)
-          if (silenceCount >= 30 && isRecording) {
+          // Wait for 15 frames of silence (about 250ms) before turning off
+          if (silenceCount >= 15 && isRecording) {
             setIsRecording(false);
           }
         }
-
-        // Log for debugging
-        // console.log(`RMS: ${rms.toFixed(4)}, dB: ${db.toFixed(1)}, Voice? ${db > threshold}`);
 
         // Continue detection loop
         if (streamRef.current) {

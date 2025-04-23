@@ -96,9 +96,10 @@
   border-radius: 50%;
   background: radial-gradient(circle, #cc99ff 0%, #9966ff 60%, #7744ff 100%);
   filter: blur(20px);
-  transition: background 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: all 0.15s linear;
   animation: enhancedPulse 3s infinite ease-in-out;
   box-shadow: 0 0 40px rgba(153, 102, 255, 0.6);
+  will-change: transform, background, filter;
 }
 
 .listening {
@@ -284,6 +285,7 @@
     transform: scale(1);
     opacity: 0.8;
     filter: blur(20px);
+    will-change: transform, opacity, filter;
   }
   50% {
     transform: scale(1.1);
@@ -301,6 +303,7 @@
   0% {
     transform: scale(1);
     filter: blur(20px);
+    will-change: transform, filter;
   }
   25% {
     transform: scale(1.15);
