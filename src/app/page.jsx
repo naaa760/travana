@@ -20,19 +20,19 @@ export default function Home() {
     },
     {
       text: "Try Talking to me directly",
-      searchPlaceholder: "Say 'Book a flight to London'...",
+      searchPlaceholder: "Say 'Hello TRAVANA'...",
     },
     {
       text: "You can ask me to book a flight",
-      searchPlaceholder: "Try 'Find flights to Paris'...",
+      searchPlaceholder: "Find flights to New York...",
     },
     {
       text: "You can ask me to book a Hotel",
-      searchPlaceholder: "Or 'Book a hotel in Barcelona'...",
+      searchPlaceholder: "Book a hotel in Paris...",
     },
     {
       text: "I can speak in 40+ Languages",
-      searchPlaceholder: "¡Hola! Bonjour! Ciao! Hallo!",
+      searchPlaceholder: "Hola! Bonjour! Ciao! Namaste!",
     },
     {
       text: "Listening...",
@@ -41,36 +41,35 @@ export default function Home() {
     },
     {
       text: "Where do you want to go? And Where are you currently?",
-      searchPlaceholder: "Tell me your location and destination...",
+      searchPlaceholder: "Tell me your departure and destination...",
     },
     {
       text: "When do you plan on going to Benguluru?",
       showFlightCode: true,
-      searchPlaceholder: "When are you traveling?",
+      searchPlaceholder: "When are you planning to travel?",
     },
     {
       text: "When do you plan on going to Benguluru?",
       showFlightCode: true,
       showDate: true,
-      searchPlaceholder: "Searching for flights on 13th April 2025...",
+      searchPlaceholder: "Searching flights on 13th April 2025...",
     },
   ];
 
   useEffect(() => {
-    // Even faster timings for logo fade in/out
     const fadeInTimeout = setTimeout(
       () => {
         setFadeState("visible");
       },
-      currentPage === 0 ? 300 : 1000
-    ); // Faster for logo
+      currentPage === 0 ? 200 : 1000
+    );
 
     const fadeOutTimeout = setTimeout(
       () => {
         setFadeState("fadeOut");
       },
-      currentPage === 0 ? 1000 : 3000
-    ); // Faster for logo
+      currentPage === 0 ? 800 : 3000
+    );
 
     const nextPageTimeout = setTimeout(
       () => {
@@ -83,8 +82,8 @@ export default function Home() {
           setFadeState("fadeIn");
         }
       },
-      currentPage === 0 ? 1200 : 4000
-    ); // Faster for logo
+      currentPage === 0 ? 1000 : 4000
+    );
 
     return () => {
       clearTimeout(fadeInTimeout);
@@ -110,7 +109,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* Enhanced voice circle that never fades */}
+          {/* Voice circle that never fades */}
           <div className={styles.circleContainer}>
             <div
               className={`${styles.circle} ${
