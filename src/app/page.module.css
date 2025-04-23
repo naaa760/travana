@@ -66,18 +66,20 @@
 }
 
 .circle {
-  width: 120px;
-  height: 120px;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
-  background-color: #b19eff;
-  filter: blur(15px);
-  transition: background-color 0.5s ease;
-  animation: gentlePulse 3s infinite ease-in-out;
+  background: radial-gradient(circle, #cc99ff 0%, #9966ff 60%, #7744ff 100%);
+  filter: blur(20px);
+  transition: background-color 0.5s ease, transform 0.3s ease;
+  animation: enhancedPulse 3s infinite ease-in-out;
+  box-shadow: 0 0 40px rgba(153, 102, 255, 0.6);
 }
 
 .listening {
-  background-color: #5f65ff;
-  animation: activeListening 1.5s infinite ease-in-out;
+  background: radial-gradient(circle, #99ccff 0%, #66aaff 60%, #3388ff 100%);
+  animation: enhancedListening 1.5s infinite ease-in-out;
+  box-shadow: 0 0 50px rgba(102, 170, 255, 0.7);
 }
 
 .prompt {
@@ -101,6 +103,13 @@
   border: 1px solid #333;
   background-color: transparent;
   font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.searchBar:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(177, 158, 255, 0.5);
+  border-color: #b19eff;
 }
 
 .flightCode {
@@ -120,7 +129,7 @@
 /* Animation States - Faster for logo */
 .fadeIn {
   opacity: 0;
-  animation: fadeIn 0.7s forwards;
+  animation: fadeIn 0.4s forwards;
 }
 
 .visible {
@@ -129,7 +138,7 @@
 
 .fadeOut {
   opacity: 1;
-  animation: fadeOut 0.7s forwards;
+  animation: fadeOut 0.4s forwards;
 }
 
 @keyframes fadeIn {
@@ -150,41 +159,44 @@
   }
 }
 
-@keyframes gentlePulse {
+@keyframes enhancedPulse {
   0% {
     transform: scale(1);
     opacity: 0.8;
+    filter: blur(20px);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.1);
     opacity: 1;
+    filter: blur(18px);
   }
   100% {
     transform: scale(1);
     opacity: 0.8;
+    filter: blur(20px);
   }
 }
 
-@keyframes activeListening {
+@keyframes enhancedListening {
   0% {
     transform: scale(1);
-    filter: blur(15px);
+    filter: blur(20px);
   }
   25% {
-    transform: scale(1.08);
-    filter: blur(13px);
+    transform: scale(1.15);
+    filter: blur(18px);
   }
   50% {
-    transform: scale(0.95);
-    filter: blur(17px);
+    transform: scale(0.92);
+    filter: blur(22px);
   }
   75% {
-    transform: scale(1.05);
-    filter: blur(14px);
+    transform: scale(1.12);
+    filter: blur(19px);
   }
   100% {
     transform: scale(1);
-    filter: blur(15px);
+    filter: blur(20px);
   }
 }
 
@@ -195,8 +207,8 @@
   }
 
   .circle {
-    width: 100px;
-    height: 100px;
+    width: 140px;
+    height: 140px;
   }
 
   .prompt {

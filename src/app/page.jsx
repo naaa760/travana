@@ -13,35 +13,63 @@ export default function Home() {
   });
 
   const pages = [
-    { text: "TRAVANA", isLogo: true },
-    { text: "Try Talking to me directly" },
-    { text: "You can ask me to book a flight" },
-    { text: "You can ask me to book a Hotel" },
-    { text: "I can speak in 40+ Languages" },
-    { text: "Listening...", isListening: true },
-    { text: "Where do you want to go? And Where are you currently?" },
-    { text: "When do you plan on going to Benguluru?", showFlightCode: true },
+    {
+      text: "TRAVANA",
+      isLogo: true,
+      searchPlaceholder: "Your AI travel assistant...",
+    },
+    {
+      text: "Try Talking to me directly",
+      searchPlaceholder: "Say 'Book a flight to London'...",
+    },
+    {
+      text: "You can ask me to book a flight",
+      searchPlaceholder: "Try 'Find flights to Paris'...",
+    },
+    {
+      text: "You can ask me to book a Hotel",
+      searchPlaceholder: "Or 'Book a hotel in Barcelona'...",
+    },
+    {
+      text: "I can speak in 40+ Languages",
+      searchPlaceholder: "¡Hola! Bonjour! Ciao! Hallo!",
+    },
+    {
+      text: "Listening...",
+      isListening: true,
+      searchPlaceholder: "I'm listening to you...",
+    },
+    {
+      text: "Where do you want to go? And Where are you currently?",
+      searchPlaceholder: "Tell me your location and destination...",
+    },
+    {
+      text: "When do you plan on going to Benguluru?",
+      showFlightCode: true,
+      searchPlaceholder: "When are you traveling?",
+    },
     {
       text: "When do you plan on going to Benguluru?",
       showFlightCode: true,
       showDate: true,
+      searchPlaceholder: "Searching for flights on 13th April 2025...",
     },
   ];
 
   useEffect(() => {
-    // Faster timings for logo fade in/out
+    // Even faster timings for logo fade in/out
     const fadeInTimeout = setTimeout(
       () => {
         setFadeState("visible");
       },
-      currentPage === 0 ? 500 : 1000
+      currentPage === 0 ? 300 : 1000
     ); // Faster for logo
 
     const fadeOutTimeout = setTimeout(
       () => {
         setFadeState("fadeOut");
       },
-      currentPage === 0 ? 1500 : 3000
+      currentPage === 0 ? 1000 : 3000
     ); // Faster for logo
 
     const nextPageTimeout = setTimeout(
@@ -55,7 +83,7 @@ export default function Home() {
           setFadeState("fadeIn");
         }
       },
-      currentPage === 0 ? 2000 : 4000
+      currentPage === 0 ? 1200 : 4000
     ); // Faster for logo
 
     return () => {
@@ -69,7 +97,6 @@ export default function Home() {
     <main className={styles.main}>
       {pages[currentPage].isLogo ? (
         <div className={`${styles.logoContainer} ${styles[fadeState]}`}>
-          {/* Removed the Image import and Image component, keeping only the text logo */}
           <h1 className={styles.logo}>TRAVANA</h1>
         </div>
       ) : (
@@ -83,7 +110,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* Voice circle that never fades */}
+          {/* Enhanced voice circle that never fades */}
           <div className={styles.circleContainer}>
             <div
               className={`${styles.circle} ${
@@ -103,7 +130,10 @@ export default function Home() {
             <input
               type="text"
               className={styles.searchBar}
-              placeholder="Search for Cheapest Flights..."
+              placeholder={
+                pages[currentPage].searchPlaceholder ||
+                "Search for Cheapest Flights..."
+              }
               readOnly
             />
           </div>
