@@ -20,6 +20,7 @@ export default function Home() {
     to: "BLR",
     date: "13th April 2025",
   });
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const pages = [
     {
@@ -122,6 +123,9 @@ export default function Home() {
   const handleTranscript = (text) => {
     if (!text.trim()) return;
 
+    // Clear previous messages when starting a new prompt
+    setMessages([]);
+
     setTranscript(text);
     setInputText(text);
     setIsConversationActive(true);
@@ -130,7 +134,17 @@ export default function Home() {
     handleChatSubmit(text);
   };
 
-  // Handle text input submission
+  // Add this function to reset to the original state after a response
+  const resetToOriginalState = () => {
+    // Wait a short time after speaking before resetting
+    setTimeout(() => {
+      setIsConversationActive(false);
+      setCurrentPage(1); // Reset to the second page (after logo)
+      setFadeState("fadeIn");
+    }, 8000); // 8 seconds after response - adjust this timing as needed
+  };
+
+  // Modify handleChatSubmit to include the reset functionality
   const handleChatSubmit = (message) => {
     if (!message.trim()) return;
 
@@ -144,7 +158,8 @@ export default function Home() {
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, newUserMessage]);
+    // Clear previous messages for a cleaner experience
+    setMessages([newUserMessage]);
 
     fetch("/api/chat", {
       method: "POST",
@@ -164,8 +179,12 @@ export default function Home() {
           timestamp: new Date(),
         };
 
-        setMessages((prev) => [...prev, newAssistantMessage]);
+        // Replace all messages with just the latest conversation
+        setMessages([newUserMessage, newAssistantMessage]);
         setChatResponse(assistantMessage);
+
+        // Speak the response - ONLY the exact response text
+        speakResponse(assistantMessage);
 
         // Process flight information
         if (
@@ -193,11 +212,14 @@ export default function Home() {
             setFlightInfo((prev) => ({ ...prev, date: dateMatch[0] }));
           }
         }
+
+        // Reset to original state after response is complete
+        resetToOriginalState();
       })
       .catch((error) => {
         console.error("Error sending message to Groq:", error);
 
-        // Add error message to conversation
+        // Add error message
         const errorMessage = {
           type: "assistant",
           content:
@@ -206,10 +228,15 @@ export default function Home() {
           timestamp: new Date(),
         };
 
-        setMessages((prev) => [...prev, errorMessage]);
-        setChatResponse(
+        setMessages([newUserMessage, errorMessage]);
+
+        // Speak the error message
+        speakResponse(
           "Sorry, I'm having trouble connecting right now. Please try again later."
         );
+
+        // Reset to original state after error
+        resetToOriginalState();
       });
   };
 
@@ -221,6 +248,9 @@ export default function Home() {
   // Handle keyboard submission
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && inputText.trim()) {
+      // Clear previous messages
+      setMessages([]);
+
       setTranscript(inputText);
       handleChatSubmit(inputText);
       e.preventDefault();
@@ -291,6 +321,111 @@ export default function Home() {
     }
   }, [isListening, styles.circle, styles.listening]);
 
+  // Add this at the top of your component (after your useState declarations)
+  useEffect(() => {
+    // Initialize speech synthesis voices
+    if ("speechSynthesis" in window) {
+      // Load voices
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length === 0) {
+        // Voices not loaded yet, add an event listener
+        window.speechSynthesis.addEventListener("voiceschanged", () => {
+          console.log(
+            "Voices loaded:",
+            window.speechSynthesis.getVoices().length
+          );
+        });
+      }
+    }
+  }, []);
+
+  // Replace the existing speakResponse function with this ElevenLabs version
+  const speakResponse = async (text) => {
+    try {
+      // Only speak if we have text to speak
+      if (!text || text.trim() === "") return;
+
+      // Create audio element if it doesn't exist
+      let audioElement = document.getElementById("tts-audio");
+      if (!audioElement) {
+        audioElement = document.createElement("audio");
+        audioElement.id = "tts-audio";
+        document.body.appendChild(audioElement);
+      }
+
+      // Stop any currently playing audio
+      audioElement.pause();
+      audioElement.currentTime = 0;
+
+      // Set speaking state
+      setIsSpeaking(true);
+
+      // Call ElevenLabs API through our Next.js API route
+      const response = await fetch("/api/elevenlabs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate speech");
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Convert base64 to blob
+      const audioBlob = base64ToBlob(data.audio, "audio/mpeg");
+      const audioUrl = URL.createObjectURL(audioBlob);
+
+      // Play the audio
+      audioElement.src = audioUrl;
+
+      // Set up event handlers
+      audioElement.onended = () => {
+        setIsSpeaking(false);
+        URL.revokeObjectURL(audioUrl); // Clean up memory
+      };
+
+      audioElement.onerror = () => {
+        setIsSpeaking(false);
+        URL.revokeObjectURL(audioUrl);
+        console.error("Audio playback error");
+      };
+
+      // Play the audio
+      audioElement.play();
+    } catch (error) {
+      console.error("Speech synthesis error:", error);
+      setIsSpeaking(false);
+    }
+  };
+
+  // Helper function to convert base64 to blob
+  const base64ToBlob = (base64, mimeType) => {
+    const byteCharacters = atob(base64);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    return new Blob(byteArrays, { type: mimeType });
+  };
+
   return (
     <main className={styles.main}>
       {pages[currentPage].isLogo && !isConversationActive ? (
@@ -299,18 +434,6 @@ export default function Home() {
         </div>
       ) : (
         <div className={styles.contentContainer}>
-          {/* Top section for flight info */}
-          {pages[currentPage].showFlightCode && !isConversationActive && (
-            <div className={styles.flightCodeContainer}>
-              <div className={styles.flightCode}>
-                {flightInfo.from} - {flightInfo.to}
-                {pages[currentPage].showDate && (
-                  <div className={styles.flightDate}>{flightInfo.date}</div>
-                )}
-              </div>
-            </div>
-          )}
-
           {/* Middle section with fixed heights */}
           <div className={styles.fixedHeightSection}>
             {/* Voice circle with fixed position */}
@@ -325,26 +448,27 @@ export default function Home() {
               )}
             </div>
 
-            {/* Text display with fixed height */}
-            {!isConversationActive && (
+            {/* Text display with fixed height - hide when listening */}
+            {!isListening && !isConversationActive && (
               <div className={styles.promptContainer}>
                 <p
                   className={`${styles.prompt} ${
                     isConversationActive ? "" : styles[fadeState]
                   }`}
                 >
-                  {displayText}
+                  {pages[currentPage].text}
                 </p>
               </div>
             )}
           </div>
 
-          {/* Message container with fixed positioning */}
-          {isConversationActive && (
+          {/* Message container - only show when in conversation and not listening */}
+          {isConversationActive && !isListening && (
             <div className={styles.messagesContainer}>
-              {/* Filter to only show assistant messages */}
+              {/* Only show assistant messages */}
               {messages
                 .filter((msg) => msg.type === "assistant")
+                .slice(-1)
                 .map((msg, index) => (
                   <div
                     key={index}
@@ -353,60 +477,48 @@ export default function Home() {
                     } ${msg.isError ? styles.errorMessage : ""}`}
                   >
                     <div className={styles.messageContent}>{msg.content}</div>
-                    <div className={styles.messageTime}>
-                      {msg.timestamp.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </div>
                   </div>
                 ))}
               <div ref={messagesEndRef} />
             </div>
           )}
 
-          {/* Bottom section with fixed position */}
-          <div className={styles.bottomSection}>
-            <div className={styles.searchBarContainer}>
-              <input
-                type="text"
-                className={styles.searchBar}
-                placeholder={
-                  isConversationActive
-                    ? "Type your message..."
-                    : pages[currentPage].searchPlaceholder
-                }
-                value={inputText}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-              />
-              {inputText.trim().length > 0 && (
-                <button
-                  className={styles.sendButton}
-                  onClick={() => {
-                    handleChatSubmit(inputText);
-                  }}
-                  aria-label="Send message"
+          {/* Bottom section with fixed position - hide during listening */}
+          {!isListening && (
+            <div className={styles.bottomSection}>
+              <div className={styles.searchBarContainer}>
+                <input
+                  type="text"
+                  className={styles.searchBar}
+                  placeholder={
+                    isConversationActive
+                      ? "Type your message..."
+                      : pages[currentPage].searchPlaceholder
+                  }
+                  value={inputText}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
                 />
-              )}
+                {inputText.trim().length > 0 && (
+                  <button
+                    className={styles.sendButton}
+                    onClick={() => {
+                      handleChatSubmit(inputText);
+                    }}
+                    aria-label="Send message"
+                  />
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Hidden voice recognition - now works automatically */}
+          {/* Hidden voice recognition component remains */}
           <div style={{ display: "none" }}>
             <VoiceRecognition
               onTranscriptReceived={handleTranscript}
               onListeningChange={handleListeningChange}
             />
           </div>
-
-          {/* Hidden chat interface is no longer needed */}
-          {/* <div style={{ display: "none" }}>
-            <ChatInterface
-              transcript={transcript}
-              onChatResponse={handleChatResponse}
-            />
-          </div> */}
         </div>
       )}
     </main>

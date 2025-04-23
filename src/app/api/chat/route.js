@@ -18,7 +18,7 @@ export async function POST(request) {
             {
               role: "system",
               content:
-                "You are TRAVANA, an AI travel assistant that helps users book flights and hotels, find travel information, and answer travel-related questions.",
+                "You are TRAVANA, an AI travel assistant that helps users book flights and hotels. Keep all responses VERY brief, under 2 sentences, and focused on answering the user's question directly. Never use more than 15-20 words. Be concise but friendly.",
             },
             {
               role: "user",
@@ -26,7 +26,7 @@ export async function POST(request) {
             },
           ],
           temperature: 0.7,
-          max_tokens: 800,
+          max_tokens: 60,
         }),
       }
     );
