@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* TT Drugs Font */
+@font-face {
+  font-family: "TT Drugs";
+  src: url("/fonts/TTDrugs-Regular.woff2") format("woff2"),
+    url("/fonts/TTDrugs-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TT Drugs";
+  src: url("/fonts/TTDrugs-Bold.woff2") format("woff2"),
+    url("/fonts/TTDrugs-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-rgb: 230, 230, 230;
@@ -11,7 +30,7 @@ body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
   overflow: hidden;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "TT Drugs", Arial, Helvetica, sans-serif;
 }
 
 @layer utilities {

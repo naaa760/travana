@@ -18,12 +18,25 @@
   width: 100%;
 }
 
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logoImage {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
 .logo {
   font-size: 3.5rem;
   font-weight: 500;
   letter-spacing: 0.15em;
   color: #000;
-  animation: logoZoomIn 1.5s ease-out forwards;
+  font-family: "TT Drugs", sans-serif;
+  animation: logoZoomIn 0.8s ease-out forwards;
   transform-origin: center;
 }
 
@@ -104,10 +117,10 @@
   margin-top: 0.3rem;
 }
 
-/* Animation States */
+/* Animation States - Faster for logo */
 .fadeIn {
   opacity: 0;
-  animation: fadeIn 1s forwards;
+  animation: fadeIn 0.7s forwards;
 }
 
 .visible {
@@ -116,7 +129,7 @@
 
 .fadeOut {
   opacity: 1;
-  animation: fadeOut 1s forwards;
+  animation: fadeOut 0.7s forwards;
 }
 
 @keyframes fadeIn {

@@ -29,24 +29,34 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    const fadeInTimeout = setTimeout(() => {
-      setFadeState("visible");
-    }, 1000);
+    // Faster timings for logo fade in/out
+    const fadeInTimeout = setTimeout(
+      () => {
+        setFadeState("visible");
+      },
+      currentPage === 0 ? 500 : 1000
+    ); // Faster for logo
 
-    const fadeOutTimeout = setTimeout(() => {
-      setFadeState("fadeOut");
-    }, 3000);
+    const fadeOutTimeout = setTimeout(
+      () => {
+        setFadeState("fadeOut");
+      },
+      currentPage === 0 ? 1500 : 3000
+    ); // Faster for logo
 
-    const nextPageTimeout = setTimeout(() => {
-      if (currentPage < pages.length - 1) {
-        setCurrentPage((prevPage) => prevPage + 1);
-        setFadeState("fadeIn");
-      } else {
-        // Reset to the beginning but skip the logo
-        setCurrentPage(1);
-        setFadeState("fadeIn");
-      }
-    }, 4000);
+    const nextPageTimeout = setTimeout(
+      () => {
+        if (currentPage < pages.length - 1) {
+          setCurrentPage((prevPage) => prevPage + 1);
+          setFadeState("fadeIn");
+        } else {
+          // Reset to the beginning but skip the logo
+          setCurrentPage(1);
+          setFadeState("fadeIn");
+        }
+      },
+      currentPage === 0 ? 2000 : 4000
+    ); // Faster for logo
 
     return () => {
       clearTimeout(fadeInTimeout);
@@ -55,16 +65,11 @@ export default function Home() {
     };
   }, [currentPage, pages.length]);
 
-  // Function to go back to home
-  const goToHome = () => {
-    setCurrentPage(0);
-    setFadeState("fadeIn");
-  };
-
   return (
     <main className={styles.main}>
       {pages[currentPage].isLogo ? (
         <div className={`${styles.logoContainer} ${styles[fadeState]}`}>
+          {/* Removed the Image import and Image component, keeping only the text logo */}
           <h1 className={styles.logo}>TRAVANA</h1>
         </div>
       ) : (
@@ -102,13 +107,6 @@ export default function Home() {
               readOnly
             />
           </div>
-
-          {/* Back to Home Button - only show if not on home page */}
-          {currentPage > 0 && (
-            <button onClick={goToHome} className={styles.homeButton}>
-              Back to Home
-            </button>
-          )}
         </div>
       )}
     </main>
