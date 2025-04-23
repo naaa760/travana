@@ -1,0 +1,12 @@
+.chatInterface {
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.loadingIndicator {
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+  color: #666;
+}
