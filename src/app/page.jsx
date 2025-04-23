@@ -305,6 +305,9 @@ export default function Home() {
                   isListening ? styles.listening : ""
                 }`}
               ></div>
+              {isListening && (
+                <div className={styles.listeningText}>Listening...</div>
+              )}
             </div>
 
             {/* Text display with fixed height */}
