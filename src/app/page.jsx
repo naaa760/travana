@@ -426,6 +426,15 @@ export default function Home() {
     return new Blob(byteArrays, { type: mimeType });
   };
 
+  // Check that your page properly passes onTranscriptReceived
+
+  // In your page component, make sure this exists and is properly passed down
+  const handleVoiceInput = (transcript) => {
+    console.log("Page received transcript:", transcript);
+    // If you're passing this to ChatInterface, make sure it's properly connected
+    // If ChatInterface is handling voice directly, you don't need this
+  };
+
   return (
     <main className={styles.main}>
       {pages[currentPage].isLogo && !isConversationActive ? (
@@ -515,7 +524,7 @@ export default function Home() {
           {/* Hidden voice recognition component remains */}
           <div style={{ display: "none" }}>
             <VoiceRecognition
-              onTranscriptReceived={handleTranscript}
+              onTranscriptReceived={handleVoiceInput}
               onListeningChange={handleListeningChange}
             />
           </div>
