@@ -44,6 +44,13 @@
   animation: pulse 1s infinite;
   transform-origin: center;
   will-change: transform, opacity;
+  position: absolute !important;
+  top: -50px !important;
+  background-color: blue !important;
+  border-radius: 50% !important;
+  width: 20px !important;
+  height: 20px !important;
+  z-index: 100 !important;
 }
 
 @keyframes pulse {
@@ -71,4 +78,20 @@
 .pulsing {
   will-change: transform;
   animation: pulse 1s infinite;
+}
+
+/* Update the container to allow for proper positioning */
+.voiceRecognitionContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+/* Style for the text to ensure it's sufficiently separated */
+.statusText {
+  margin-top: 10px;
+  position: relative;
+  z-index: 1;
 }

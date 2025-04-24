@@ -144,7 +144,7 @@ export default function Home() {
     }, 8000); // 8 seconds after response - adjust this timing as needed
   };
 
-  // Modify handleChatSubmit to include the reset functionality
+  // Modify handleChatSubmit to not reset until speaking is done
   const handleChatSubmit = (message) => {
     if (!message.trim()) return;
 
@@ -213,8 +213,11 @@ export default function Home() {
           }
         }
 
-        // Reset to original state after response is complete
-        resetToOriginalState();
+        // Don't reset to original state here! Let onended handle that
+        // Only reset if we don't have speech
+        if (!assistantMessage.trim()) {
+          resetToOriginalState();
+        }
       })
       .catch((error) => {
         console.error("Error sending message to Groq:", error);
@@ -234,9 +237,6 @@ export default function Home() {
         speakResponse(
           "Sorry, I'm having trouble connecting right now. Please try again later."
         );
-
-        // Reset to original state after error
-        resetToOriginalState();
       });
   };
 
@@ -339,11 +339,17 @@ export default function Home() {
     }
   }, []);
 
-  // Replace the existing speakResponse function with this ElevenLabs version
+  // Optimize the speakResponse function to be more responsive
   const speakResponse = async (text) => {
     try {
+      // Set speaking state IMMEDIATELY
+      setIsSpeaking(true);
+
       // Only speak if we have text to speak
-      if (!text || text.trim() === "") return;
+      if (!text || text.trim() === "") {
+        setIsSpeaking(false);
+        return;
+      }
 
       // Create audio element if it doesn't exist
       let audioElement = document.getElementById("tts-audio");
@@ -357,52 +363,64 @@ export default function Home() {
       audioElement.pause();
       audioElement.currentTime = 0;
 
-      // Set speaking state
-      setIsSpeaking(true);
+      // Call ElevenLabs API through our Next.js API route - with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8-second timeout
 
-      // Call ElevenLabs API through our Next.js API route
-      const response = await fetch("/api/elevenlabs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text }),
-      });
+      try {
+        const response = await fetch("/api/elevenlabs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+          signal: controller.signal,
+        });
 
-      if (!response.ok) {
-        throw new Error("Failed to generate speech");
-      }
+        clearTimeout(timeoutId);
 
-      const data = await response.json();
+        if (!response.ok) {
+          throw new Error("Failed to generate speech");
+        }
 
-      if (data.error) {
-        throw new Error(data.error);
-      }
+        const data = await response.json();
 
-      // Convert base64 to blob
-      const audioBlob = base64ToBlob(data.audio, "audio/mpeg");
-      const audioUrl = URL.createObjectURL(audioBlob);
+        if (data.error) {
+          throw new Error(data.error);
+        }
 
-      // Play the audio
-      audioElement.src = audioUrl;
+        // Convert base64 to blob
+        const audioBlob = base64ToBlob(data.audio, "audio/mpeg");
+        const audioUrl = URL.createObjectURL(audioBlob);
 
-      // Set up event handlers
-      audioElement.onended = () => {
+        // Play the audio
+        audioElement.src = audioUrl;
+
+        // Set up event handlers
+        audioElement.onplay = () => console.log("Speaking started");
+
+        audioElement.onended = () => {
+          setIsSpeaking(false);
+          resetToOriginalState();
+          URL.revokeObjectURL(audioUrl);
+        };
+
+        audioElement.onerror = () => {
+          setIsSpeaking(false);
+          resetToOriginalState();
+          URL.revokeObjectURL(audioUrl);
+        };
+
+        // Play the audio
+        await audioElement.play();
+      } catch (error) {
+        clearTimeout(timeoutId);
+        console.error("Speech request failed:", error);
         setIsSpeaking(false);
-        URL.revokeObjectURL(audioUrl); // Clean up memory
-      };
-
-      audioElement.onerror = () => {
-        setIsSpeaking(false);
-        URL.revokeObjectURL(audioUrl);
-        console.error("Audio playback error");
-      };
-
-      // Play the audio
-      audioElement.play();
+        resetToOriginalState();
+      }
     } catch (error) {
       console.error("Speech synthesis error:", error);
       setIsSpeaking(false);
+      resetToOriginalState();
     }
   };
 
@@ -426,13 +444,14 @@ export default function Home() {
     return new Blob(byteArrays, { type: mimeType });
   };
 
-  // Check that your page properly passes onTranscriptReceived
-
-  // In your page component, make sure this exists and is properly passed down
+  // In your page component, update handleVoiceInput to actually use the transcript
   const handleVoiceInput = (transcript) => {
     console.log("Page received transcript:", transcript);
-    // If you're passing this to ChatInterface, make sure it's properly connected
-    // If ChatInterface is handling voice directly, you don't need this
+
+    if (transcript && transcript.trim()) {
+      // This is the critical missing piece - send the transcript to your chat processor
+      handleChatSubmit(transcript);
+    }
   };
 
   return (
@@ -449,12 +468,16 @@ export default function Home() {
             <div className={styles.circleContainer}>
               <div
                 className={`${styles.circle} ${
-                  isListening ? styles.listening : ""
+                  isListening || isSpeaking ? styles.listening : ""
                 }`}
+                style={{ marginTop: "-40px" }}
               ></div>
-              {isListening && (
-                <div className={styles.listeningText}>Listening...</div>
-              )}
+              <div
+                className={styles.listeningText}
+                style={{ marginTop: "-20px" }}
+              >
+                {isListening ? "Listening..." : isSpeaking ? "Speaking..." : ""}
+              </div>
             </div>
 
             {/* Text display with fixed height - hide when listening */}
@@ -472,22 +495,26 @@ export default function Home() {
           </div>
 
           {/* Message container - only show when in conversation and not listening */}
-          {isConversationActive && !isListening && (
-            <div className={styles.messagesContainer}>
-              {/* Only show assistant messages */}
-              {messages
-                .filter((msg) => msg.type === "assistant")
-                .slice(-1)
-                .map((msg, index) => (
+          {isConversationActive && (
+            <div
+              className={styles.messagesContainer}
+              style={{
+                marginTop: "100px",
+                position: "relative",
+                zIndex: 1,
+              }}
+            >
+              {/* Show the latest message */}
+              {messages.length > 0 &&
+                messages[messages.length - 1].type === "assistant" && (
                   <div
-                    key={index}
-                    className={`${styles.messageCard} ${
-                      styles.assistantMessage
-                    } ${msg.isError ? styles.errorMessage : ""}`}
+                    className={`${styles.messageCard} ${styles.assistantMessage}`}
                   >
-                    <div className={styles.messageContent}>{msg.content}</div>
+                    <div className={styles.messageContent}>
+                      {messages[messages.length - 1].content}
+                    </div>
                   </div>
-                ))}
+                )}
               <div ref={messagesEndRef} />
             </div>
           )}

@@ -20,17 +20,10 @@ export default function VoiceRecognition({
   const [transcript, setTranscript] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Remove the debounce timers that are causing problems
-  // const isSpeakingRef = useRef(false);
-  // const speakingTimeoutRef = useRef(null);
-  // const silenceTimeoutRef = useRef(null);
-
-  // Check for microphone permissions on mount
   useEffect(() => {
     checkMicrophonePermission();
 
     return () => {
-      // Clean up any active streams
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop());
       }
@@ -102,6 +95,11 @@ export default function VoiceRecognition({
 
           setTranscript(transcript);
 
+          // IMPORTANT: Send the transcript to your handler
+          if (transcript.trim() && onTranscriptReceived) {
+            onTranscriptReceived(transcript);
+          }
+
           // Update UI immediately when speech is detected
           setIsListening(true);
         };
@@ -158,6 +156,7 @@ export default function VoiceRecognition({
   }, [isListening]);
 
   const startRecording = async () => {
+    console.log("Starting to listen...");
     if (isProcessing) return;
 
     try {
@@ -259,10 +258,12 @@ export default function VoiceRecognition({
       // Handle recording stop
       mediaRecorder.onstop = async () => {
         setIsProcessing(true);
+        console.log("Recording stopped, processing audio...");
 
         // Only process if we have audio data
         if (chunksRef.current.length > 0) {
           const audioBlob = new Blob(chunksRef.current, { type: mimeType });
+          console.log("Audio blob size:", audioBlob.size);
 
           // Only send to API if the blob has a reasonable size (not empty)
           if (audioBlob.size > 100) {
@@ -270,20 +271,32 @@ export default function VoiceRecognition({
             formData.append("audio", audioBlob);
 
             try {
+              console.log("Sending audio to API...");
               const response = await fetch("/api/speech", {
                 method: "POST",
                 body: formData,
               });
 
+              if (!response.ok) {
+                throw new Error(`API response error: ${response.status}`);
+              }
+
               const data = await response.json();
+              console.log("Received transcript:", data);
 
               if (data.transcript && data.transcript.trim()) {
                 onTranscriptReceived(data.transcript);
+              } else {
+                console.warn("Empty transcript received");
               }
             } catch (error) {
               console.error("Error processing speech:", error);
             }
+          } else {
+            console.warn("Audio blob too small to process");
           }
+        } else {
+          console.warn("No audio chunks collected");
         }
 
         // Clean up the stream
@@ -321,6 +334,11 @@ export default function VoiceRecognition({
       timeoutRef.current = setTimeout(startRecording, 3000);
     }
   };
+
+  function processAudioResult(result) {
+    console.log("Processing audio result:", result);
+    // ... existing code ...
+  }
 
   return (
     <div className={styles.voiceRecognitionContainer}>
