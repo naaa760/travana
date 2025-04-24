@@ -39,3 +39,36 @@
     transform: scale(1);
   }
 }
+
+.listeningIndicator {
+  animation: pulse 1s infinite;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+}
+
+/* Make sure transitions are fast */
+.voiceButton,
+.micIcon {
+  transition: all 0.1s ease-in-out !important;
+}
+
+/* Optimize animation performance */
+.pulsing {
+  will-change: transform;
+  animation: pulse 1s infinite;
+}

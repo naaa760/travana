@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import styles from "./VoiceRecognition.module.css";
 
 export default function VoiceRecognition({
@@ -14,6 +14,11 @@ export default function VoiceRecognition({
   const chunksRef = useRef([]);
   const timeoutRef = useRef(null);
   const streamRef = useRef(null);
+  const recognition = useRef(null);
+  const [isListening, setIsListening] = useState(false);
+  const [keepListening, setKeepListening] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Remove the debounce timers that are causing problems
   // const isSpeakingRef = useRef(false);
@@ -60,6 +65,97 @@ export default function VoiceRecognition({
       onListeningChange(isRecording);
     }
   }, [isRecording, onListeningChange]);
+
+  // Optimize the speech recognition initialization
+  useEffect(() => {
+    if (!recognition.current && typeof window !== "undefined") {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        recognition.current = new SpeechRecognition();
+        recognition.current.continuous = true;
+        recognition.current.interimResults = true;
+        recognition.current.lang = "en-US";
+
+        // Make these handlers more responsive
+        recognition.current.onstart = () => {
+          setIsListening(true);
+          setErrorMessage("");
+        };
+
+        recognition.current.onaudiostart = () => {
+          // Immediately show visual feedback when audio is detected
+          setIsListening(true);
+        };
+
+        recognition.current.onspeechstart = () => {
+          // Ensure circle appears as soon as speech starts
+          setIsListening(true);
+        };
+
+        recognition.current.onresult = (event) => {
+          // Process results immediately
+          const transcript = Array.from(event.results)
+            .map((result) => result[0])
+            .map((result) => result.transcript)
+            .join("");
+
+          setTranscript(transcript);
+
+          // Update UI immediately when speech is detected
+          setIsListening(true);
+        };
+
+        recognition.current.onerror = (event) => {
+          console.error("Speech recognition error", event.error);
+          setErrorMessage(`Error: ${event.error}`);
+          setIsListening(false);
+        };
+
+        recognition.current.onend = () => {
+          // Only set to false if we're actually stopping listening
+          if (!keepListening) {
+            setIsListening(false);
+          } else {
+            // Restart immediately to prevent delays
+            try {
+              recognition.current.start();
+            } catch (err) {
+              console.error("Could not restart recognition", err);
+            }
+          }
+        };
+      } else {
+        setErrorMessage("Speech recognition not supported in this browser.");
+      }
+    }
+  }, [keepListening]);
+
+  // Improve toggle function for faster response
+  const toggleListening = useCallback(() => {
+    if (recognition.current) {
+      if (isListening) {
+        recognition.current.stop();
+        setKeepListening(false);
+      } else {
+        // Add a visual feedback immediately
+        setIsListening(true);
+
+        // Start recognition with minimal delay
+        setTimeout(() => {
+          try {
+            recognition.current.start();
+            setKeepListening(true);
+            setErrorMessage("");
+          } catch (error) {
+            console.error("Error starting recognition:", error);
+            setIsListening(false);
+            setErrorMessage(`Failed to start listening: ${error.message}`);
+          }
+        }, 10);
+      }
+    }
+  }, [isListening]);
 
   const startRecording = async () => {
     if (isProcessing) return;
@@ -227,7 +323,44 @@ export default function VoiceRecognition({
   };
 
   return (
-    <div className={styles.voiceStatus}>
+    <div className={styles.voiceRecognitionContainer}>
+      <button
+        onClick={toggleListening}
+        className={`${styles.voiceButton} ${
+          isListening ? styles.listening : ""
+        }`}
+        aria-label={isListening ? "Stop listening" : "Start listening"}
+      >
+        <div className={styles.buttonContent}>
+          <div
+            className={`${styles.micIcon} ${isListening ? styles.pulsing : ""}`}
+            style={{ transition: "all 0.1s ease-in-out" }} // Faster transition
+          >
+            {isListening ? "🎙️" : "🎙️"}
+          </div>
+          <div className={styles.statusText}>
+            {isListening ? "Listening..." : "Listen"}
+          </div>
+        </div>
+      </button>
+
+      {/* Improve the visual indicator responsiveness */}
+      {isListening && (
+        <div
+          className={styles.listeningIndicator}
+          style={{
+            backgroundColor: "blue",
+            borderRadius: "50%",
+            width: "20px",
+            height: "20px",
+            position: "absolute",
+            top: "-10px",
+            right: "-10px",
+            animation: "pulse 1s infinite",
+          }}
+        />
+      )}
+
       {!permissionGranted && (
         <div className={styles.permissionWarning}>
           Microphone access required for voice features
