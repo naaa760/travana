@@ -465,17 +465,21 @@ export default function Home() {
           {/* Middle section with fixed heights */}
           <div className={styles.fixedHeightSection}>
             {/* Voice circle with fixed position */}
-            <div className={styles.circleContainer}>
+            <div
+              className={styles.circleContainer}
+              style={{
+                position: "absolute",
+                top: "10px", // Fixed pixel distance from top
+                left: "50%",
+                transform: "translateX(-50%)",
+              }}
+            >
               <div
                 className={`${styles.circle} ${
-                  isListening || isSpeaking ? styles.listening : ""
+                  isListening ? styles.listening : ""
                 }`}
-                style={{ marginTop: "-40px" }}
               ></div>
-              <div
-                className={styles.listeningText}
-                style={{ marginTop: "-20px" }}
-              >
+              <div className={styles.listeningText}>
                 {isListening ? "Listening..." : isSpeaking ? "Speaking..." : ""}
               </div>
             </div>
