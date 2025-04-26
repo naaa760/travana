@@ -340,7 +340,7 @@ export default function Home() {
   }, []);
 
   // Optimize the speakResponse function to be more responsive
-  const speakResponse = async (text) => {
+  const speakResponse11 = async (text) => {
     try {
       // Set speaking state IMMEDIATELY
       setIsSpeaking(true);
@@ -424,6 +424,52 @@ export default function Home() {
     }
   };
 
+  const speakResponse = async (text) => {
+    try {
+      setIsSpeaking(true);
+
+      if (!text || text.trim() === "") {
+        setIsSpeaking(false);
+        return;
+      }
+
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+
+      // Create a new utterance
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US"; // You can set the language/accent here
+      utterance.rate = 1; // 1 = normal speed
+      utterance.pitch = 1; // 1 = normal pitch
+      utterance.volume = 1; // 1 = max volume
+
+      // Handle speech start
+      utterance.onstart = () => {
+        console.log("Speaking started");
+      };
+
+      // Handle speech end
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        resetToOriginalState();
+      };
+
+      // Handle speech error
+      utterance.onerror = (event) => {
+        console.error("Speech synthesis error:", event.error);
+        setIsSpeaking(false);
+        resetToOriginalState();
+      };
+
+      // Speak the text
+      window.speechSynthesis.speak(utterance);
+    } catch (error) {
+      console.error("Speech synthesis error:", error);
+      setIsSpeaking(false);
+      resetToOriginalState();
+    }
+  };
+
   // Helper function to convert base64 to blob
   const base64ToBlob = (base64, mimeType) => {
     const byteCharacters = atob(base64);
@@ -468,7 +514,7 @@ export default function Home() {
             <div className={styles.circleContainer}>
               <div
                 className={`${styles.circle} ${
-                  isListening || isSpeaking ? styles.listening : ""
+                  isListening ? styles.listening : ""
                 }`}
                 style={{ marginTop: "-40px" }}
               ></div>
