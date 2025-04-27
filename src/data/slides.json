@@ -1,0 +1,43 @@
+[
+    {
+        "text": "TRAVANA",
+        "isLogo": true,
+        "searchPlaceholder": "Your AI travel assistant..."
+    },
+    {
+        "text": "Try Talking to me directly",
+        "searchPlaceholder": "Say 'Hello TRAVANA'..."
+    },
+    {
+        "text": "You can ask me to book a flight",
+        "searchPlaceholder": "Find flights to New York..."
+    },
+    {
+        "text": "You can ask me to book a Hotel",
+        "searchPlaceholder": "Book a hotel in Paris..."
+    },
+    {
+        "text": "I can speak in 40+ Languages",
+        "searchPlaceholder": "Hola! Bonjour! Ciao! Namaste!"
+    },
+    {
+        "text": "Listening...",
+        "isListening": true,
+        "searchPlaceholder": "I'm listening to you..."
+    },
+    {
+        "text": "Where do you want to go? And Where are you currently?",
+        "searchPlaceholder": "Tell me your departure and destination..."
+    },
+    {
+        "text": "When do you plan on going to Benguluru?",
+        "showFlightCode": true,
+        "searchPlaceholder": "When are you planning to travel?"
+    },
+    {
+        "text": "When do you plan on going to Benguluru?",
+        "showFlightCode": true,
+        "showDate": true,
+        "searchPlaceholder": "Searching flights on 13th April 2025..."
+    }
+]
