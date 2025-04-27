@@ -2,13 +2,22 @@
 
 import { useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
-import VoiceRecognition from "@/components/VoiceRecognition";
+// import VoiceRecognition from "@/components/VoiceRecognition";
 import ChatInterface from "@/components/ChatInterface";
+import React from "react";
+import {
+  TravanaAgentProvider,
+  useTravanaAgentContext,
+} from "@/contexts/TravanaAgentContext";
+import {
+  useVoiceRecorderContext,
+  VoiceRecorderProvider,
+} from "@/contexts/VoiceRecorderContext";
 
-export default function Home() {
+function Home() {
   const [currentPage, setCurrentPage] = useState(0);
   const [fadeState, setFadeState] = useState("fadeIn");
-  const [transcript, setTranscript] = useState("");
+  // const [transcript, setTranscript] = useState("");
   const [chatResponse, setChatResponse] = useState("");
   const [isConversationActive, setIsConversationActive] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -21,6 +30,10 @@ export default function Home() {
     date: "13th April 2025",
   });
   const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const { sendMessage } = useTravanaAgentContext();
+  const { isRecording, isProcessing, listening, userSpeaking, transcript } =
+    useVoiceRecorderContext();
 
   const pages = [
     {
@@ -65,6 +78,10 @@ export default function Home() {
       searchPlaceholder: "Searching flights on 13th April 2025...",
     },
   ];
+
+  useEffect(() => {
+    sendMessage(transcript);
+  }, [transcript]);
 
   // Auto-cycle pages ONLY when conversation is not active
   useEffect(() => {
@@ -126,12 +143,12 @@ export default function Home() {
     // Clear previous messages when starting a new prompt
     setMessages([]);
 
-    setTranscript(text);
+    // setTranscript(text);
     setInputText(text);
     setIsConversationActive(true);
 
     // Process the transcript when received
-    handleChatSubmit(text);
+    sendMessage(text);
   };
 
   // Add this function to reset to the original state after a response
@@ -142,102 +159,6 @@ export default function Home() {
       setCurrentPage(1); // Reset to the second page (after logo)
       setFadeState("fadeIn");
     }, 8000); // 8 seconds after response - adjust this timing as needed
-  };
-
-  // Modify handleChatSubmit to not reset until speaking is done
-  const handleChatSubmit = (message) => {
-    if (!message.trim()) return;
-
-    setIsConversationActive(true);
-    setInputText("");
-
-    // Add user message to conversation
-    const newUserMessage = {
-      type: "user",
-      content: message,
-      timestamp: new Date(),
-    };
-
-    // Clear previous messages for a cleaner experience
-    setMessages([newUserMessage]);
-
-    fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const assistantMessage =
-          data.choices?.[0]?.message?.content ||
-          "Sorry, I couldn't process that request.";
-
-        // Add assistant message to conversation
-        const newAssistantMessage = {
-          type: "assistant",
-          content: assistantMessage,
-          timestamp: new Date(),
-        };
-
-        // Replace all messages with just the latest conversation
-        setMessages([newUserMessage, newAssistantMessage]);
-        setChatResponse(assistantMessage);
-
-        // Speak the response - ONLY the exact response text
-        speakResponse(assistantMessage);
-
-        // Process flight information
-        if (
-          assistantMessage.includes("flight") ||
-          assistantMessage.includes("travel")
-        ) {
-          // Simple pattern matching - you could make this more sophisticated
-          if (
-            assistantMessage.includes("Delhi") ||
-            assistantMessage.includes("DEL")
-          ) {
-            setFlightInfo((prev) => ({ ...prev, from: "DEL" }));
-          }
-          if (
-            assistantMessage.includes("Bengaluru") ||
-            assistantMessage.includes("BLR")
-          ) {
-            setFlightInfo((prev) => ({ ...prev, to: "BLR" }));
-          }
-          // Extract potential dates - this is a simple example
-          const dateMatch = assistantMessage.match(
-            /(\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+\s+\d{4})/
-          );
-          if (dateMatch) {
-            setFlightInfo((prev) => ({ ...prev, date: dateMatch[0] }));
-          }
-        }
-
-        // Don't reset to original state here! Let onended handle that
-        // Only reset if we don't have speech
-        if (!assistantMessage.trim()) {
-          resetToOriginalState();
-        }
-      })
-      .catch((error) => {
-        console.error("Error sending message to Groq:", error);
-
-        // Add error message
-        const errorMessage = {
-          type: "assistant",
-          content:
-            "Sorry, I'm having trouble connecting right now. Please try again later.",
-          isError: true,
-          timestamp: new Date(),
-        };
-
-        setMessages([newUserMessage, errorMessage]);
-
-        // Speak the error message
-        speakResponse(
-          "Sorry, I'm having trouble connecting right now. Please try again later."
-        );
-      });
   };
 
   // Handle input change
@@ -251,8 +172,8 @@ export default function Home() {
       // Clear previous messages
       setMessages([]);
 
-      setTranscript(inputText);
-      handleChatSubmit(inputText);
+      // setTranscript(inputText);
+      sendMessage(inputText);
       e.preventDefault();
     }
   };
@@ -268,7 +189,7 @@ export default function Home() {
     // setChatHistory(prev => [...prev, { query: transcript, response: chatResponse }]);
 
     // Clear for new chat
-    setTranscript("");
+    // setTranscript("");
     setChatResponse("");
   };
 
@@ -279,9 +200,9 @@ export default function Home() {
       : chatResponse || "How can I help you?"
     : pages[currentPage].text;
 
-  const displaySearchPlaceholder = isConversationActive
-    ? transcript || "Just speak to TRAVANA..."
-    : pages[currentPage].searchPlaceholder;
+  // const displaySearchPlaceholder = isConversationActive
+  //   ? transcript || "Just speak to TRAVANA..."
+  //   : pages[currentPage].searchPlaceholder;
 
   // Add this function to fix the error
   const handleChatResponse = (response) => {
@@ -309,7 +230,7 @@ export default function Home() {
   // Update the useEffect that handles listening state in Page.jsx
   useEffect(() => {
     // Make the circle change more immediate with direct DOM manipulation
-    const circle = document.querySelector(`.${styles.circle}`);
+    const circle = document.querySelector(`.${styles.circle}`) as HTMLElement;
     if (circle) {
       if (isListening) {
         circle.classList.add(styles.listening);
@@ -338,167 +259,6 @@ export default function Home() {
       }
     }
   }, []);
-
-  // Optimize the speakResponse function to be more responsive
-  const speakResponse11 = async (text) => {
-    try {
-      // Set speaking state IMMEDIATELY
-      setIsSpeaking(true);
-
-      // Only speak if we have text to speak
-      if (!text || text.trim() === "") {
-        setIsSpeaking(false);
-        return;
-      }
-
-      // Create audio element if it doesn't exist
-      let audioElement = document.getElementById("tts-audio");
-      if (!audioElement) {
-        audioElement = document.createElement("audio");
-        audioElement.id = "tts-audio";
-        document.body.appendChild(audioElement);
-      }
-
-      // Stop any currently playing audio
-      audioElement.pause();
-      audioElement.currentTime = 0;
-
-      // Call ElevenLabs API through our Next.js API route - with timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8-second timeout
-
-      try {
-        const response = await fetch("/api/elevenlabs", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text }),
-          signal: controller.signal,
-        });
-
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-          throw new Error("Failed to generate speech");
-        }
-
-        const data = await response.json();
-
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        // Convert base64 to blob
-        const audioBlob = base64ToBlob(data.audio, "audio/mpeg");
-        const audioUrl = URL.createObjectURL(audioBlob);
-
-        // Play the audio
-        audioElement.src = audioUrl;
-
-        // Set up event handlers
-        audioElement.onplay = () => console.log("Speaking started");
-
-        audioElement.onended = () => {
-          setIsSpeaking(false);
-          resetToOriginalState();
-          URL.revokeObjectURL(audioUrl);
-        };
-
-        audioElement.onerror = () => {
-          setIsSpeaking(false);
-          resetToOriginalState();
-          URL.revokeObjectURL(audioUrl);
-        };
-
-        // Play the audio
-        await audioElement.play();
-      } catch (error) {
-        clearTimeout(timeoutId);
-        console.error("Speech request failed:", error);
-        setIsSpeaking(false);
-        resetToOriginalState();
-      }
-    } catch (error) {
-      console.error("Speech synthesis error:", error);
-      setIsSpeaking(false);
-      resetToOriginalState();
-    }
-  };
-
-  const speakResponse = async (text) => {
-    try {
-      setIsSpeaking(true);
-
-      if (!text || text.trim() === "") {
-        setIsSpeaking(false);
-        return;
-      }
-
-      // Cancel any ongoing speech
-      window.speechSynthesis.cancel();
-
-      // Create a new utterance
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "en-US"; // You can set the language/accent here
-      utterance.rate = 1; // 1 = normal speed
-      utterance.pitch = 1; // 1 = normal pitch
-      utterance.volume = 1; // 1 = max volume
-
-      // Handle speech start
-      utterance.onstart = () => {
-        console.log("Speaking started");
-      };
-
-      // Handle speech end
-      utterance.onend = () => {
-        setIsSpeaking(false);
-        resetToOriginalState();
-      };
-
-      // Handle speech error
-      utterance.onerror = (event) => {
-        console.error("Speech synthesis error:", event.error);
-        setIsSpeaking(false);
-        resetToOriginalState();
-      };
-
-      // Speak the text
-      window.speechSynthesis.speak(utterance);
-    } catch (error) {
-      console.error("Speech synthesis error:", error);
-      setIsSpeaking(false);
-      resetToOriginalState();
-    }
-  };
-
-  // Helper function to convert base64 to blob
-  const base64ToBlob = (base64, mimeType) => {
-    const byteCharacters = atob(base64);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-      const slice = byteCharacters.slice(offset, offset + 512);
-
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-
-    return new Blob(byteArrays, { type: mimeType });
-  };
-
-  // In your page component, update handleVoiceInput to actually use the transcript
-  const handleVoiceInput = (transcript) => {
-    console.log("Page received transcript:", transcript);
-
-    if (transcript && transcript.trim()) {
-      // This is the critical missing piece - send the transcript to your chat processor
-      handleChatSubmit(transcript);
-    }
-  };
 
   return (
     <main className={styles.main}>
@@ -585,7 +345,7 @@ export default function Home() {
                   <button
                     className={styles.sendButton}
                     onClick={() => {
-                      handleChatSubmit(inputText);
+                      sendMessage(inputText);
                     }}
                     aria-label="Send message"
                   />
@@ -595,14 +355,24 @@ export default function Home() {
           )}
 
           {/* Hidden voice recognition component remains */}
-          <div style={{ display: "none" }}>
+          {/* <div style={{ display: "none" }}>
             <VoiceRecognition
               onTranscriptReceived={handleVoiceInput}
               onListeningChange={handleListeningChange}
             />
-          </div>
+          </div> */}
         </div>
       )}
     </main>
   );
 }
+
+export const TravanaAI = () => {
+  return (
+    <TravanaAgentProvider>
+      <VoiceRecorderProvider>
+        <Home />
+      </VoiceRecorderProvider>
+    </TravanaAgentProvider>
+  );
+};
