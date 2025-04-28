@@ -1,21 +1,17 @@
 import { useState } from "react";
-import { useTravanaProcessor } from "./useTravanaProcessor";
-import { useTextToSpeech } from "./useTextToSpeech";
 
 export interface Responses {
-  type: "user" | "assistant";
+  role: "user" | "assistant";
   content: string;
-  timestamp: Date;
+  // timestamp: Date;
 }
 
-export function useTravanaAgent() {
+export function useTravanaAgent(onResponseRecieved: (text: string) => void) {
   const [creatingThread, setCreatingThread] = useState(false);
   const [threadId, setThreadId] = useState<string | null>(null);
   const [fetchingResponse, setFetchingResponse] = useState(false);
   const [responseError, setResponseError] = useState<string | null>(null);
   const [responses, setResponses] = useState<Responses[]>([]);
-  const { flightInfo, processAssistantMessage } = useTravanaProcessor();
-  const { speakNative } = useTextToSpeech(() => {});
 
   // Mock createThread function
   const createThread = async () => {
@@ -38,53 +34,58 @@ export function useTravanaAgent() {
     if (!userInput.trim()) return;
 
     try {
-      if (!threadId) {
-        await createThread();
-      }
+      // if (!threadId) {
+      //   await createThread();
+      // }
 
       setFetchingResponse(true);
       setResponseError(null);
 
-      const newUserMessage = {
-        type: "user" as const,
+      const newUserMessage: Responses = {
+        role: "user",
         content: userInput,
-        timestamp: new Date(),
+        // timestamp: new Date(),
       };
 
-      setResponses((prev) => [...prev, newUserMessage]);
+      const updatedResponses = [...responses, newUserMessage];
+      setResponses(updatedResponses);
+
+      // const formattedMessages = updatedResponses.map((msg) => ({
+      //   role: msg.role,
+      //   content: msg.content,
+      // }));
 
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: userInput }),
+        body: JSON.stringify({
+          messages: updatedResponses.slice(-10),
+        }),
       });
 
       const data = await response.json();
 
-      const assistantMessage =
-        data.choices?.[0]?.message?.content ||
-        "Sorry, I couldn't process that request.";
+      const assistantMessage = data || "Sorry, no response.";
 
-      const newAssistantMessage = {
-        type: "assistant" as const,
+      const newAssistantMessage: Responses = {
+        role: "assistant",
         content: assistantMessage,
-        timestamp: new Date(),
+        // timestamp: new Date(),
       };
 
       setResponses((prev) => [...prev, newAssistantMessage]);
-      speakNative(assistantMessage);
-      processAssistantMessage(assistantMessage);
+      onResponseRecieved(assistantMessage);
     } catch (error) {
       console.error("Error sending message:", error);
       setResponseError("Failed to send message");
 
-      const errorAssistantMessage = {
-        type: "assistant" as const,
+      const errorAssistantMessage: Responses = {
+        role: "assistant" as const,
         content:
           "Sorry, I'm having trouble connecting right now. Please try again later.",
-        timestamp: new Date(),
+        // timestamp: new Date(),
       };
 
       setResponses((prev) => [...prev, errorAssistantMessage]);

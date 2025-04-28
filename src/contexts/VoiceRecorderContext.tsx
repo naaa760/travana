@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import useVoiceRecorder from "@/hooks/useVoiceRecorder";
 
 // Define context shape
@@ -22,6 +22,23 @@ export const VoiceRecorderProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [transcript, setTranscript] = useState("");
+
+  useEffect(() => {
+    // Override console.warn to filter onnxruntime warnings globally
+    const originalWarn = console.warn;
+    console.warn = (message, ...args) => {
+      if (message && message.includes("onnxruntime")) {
+        // Ignore ONNX Runtime warnings
+        return;
+      }
+      originalWarn(message, ...args);
+    };
+
+    // Cleanup function to restore the original behavior
+    return () => {
+      console.warn = originalWarn;
+    };
+  }, []);
 
   const voiceRecorder = useVoiceRecorder((newTranscript) => {
     console.log("✨ Transcript received:", newTranscript);

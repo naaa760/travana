@@ -18,27 +18,25 @@ import styles from "./page.module.css";
 function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [fadeState, setFadeState] = useState("fadeIn");
-  // const [transcript, setTranscript] = useState("");
   const [chatResponse, setChatResponse] = useState("");
   const [isConversationActive, setIsConversationActive] = useState(false);
-  // const [userSpeaking, setIsListening] = useState(false);
   const [inputText, setInputText] = useState("");
-  const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   const [flightInfo, setFlightInfo] = useState({
     from: "DEL",
     to: "BLR",
     date: "13th April 2025",
   });
-  const [isSpeaking, setIsSpeaking] = useState(false);
 
-  const { sendMessage } = useTravanaAgentContext();
-  const { isProcessing, listening, userSpeaking, transcript } =
+  const { sendMessage, responses, isSpeaking } = useTravanaAgentContext();
+  const { isProcessing, listening, isRecording, transcript } =
     useVoiceRecorderContext();
 
   useEffect(() => {
     sendMessage(transcript);
   }, [transcript]);
+
+  useEffect(() => setIsConversationActive(responses.length > 0), [responses]);
 
   // Auto-cycle slides ONLY when conversation is not active
   useEffect(() => {
@@ -86,12 +84,12 @@ function Home() {
     };
   }, [currentSlide, slides.length, isConversationActive]);
 
-  // Auto-scroll to bottom when messages change
+  // Auto-scroll to bottom when responses change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [responses]);
 
   // Add this function to reset to the original state after a response
   const resetToOriginalState = () => {
@@ -111,8 +109,8 @@ function Home() {
   // Handle keyboard submission
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && inputText.trim()) {
-      // Clear previous messages
-      setMessages([]);
+      // Clear previous responses
+      // setMessages([]);
 
       // setTranscript(inputText);
       sendMessage(inputText);
@@ -132,7 +130,7 @@ function Home() {
 
   // Add this to displayText logic to ensure responses don't disappear
   const displayText = isConversationActive
-    ? userSpeaking
+    ? isRecording
       ? "Listening..."
       : chatResponse || "How can I help you?"
     : slides[currentSlide].text;
@@ -140,44 +138,6 @@ function Home() {
   // const displaySearchPlaceholder = isConversationActive
   //   ? transcript || "Just speak to TRAVANA..."
   //   : slides[currentSlide].searchPlaceholder;
-
-  // Add this function to fix the error
-  const handleChatResponse = (response) => {
-    setChatResponse(response);
-
-    // Process flight information - copied from handleChatSubmit
-    if (response.includes("flight") || response.includes("travel")) {
-      // Pattern matching for flight information
-      if (response.includes("Delhi") || response.includes("DEL")) {
-        setFlightInfo((prev) => ({ ...prev, from: "DEL" }));
-      }
-      if (response.includes("Bengaluru") || response.includes("BLR")) {
-        setFlightInfo((prev) => ({ ...prev, to: "BLR" }));
-      }
-      // Extract potential dates
-      const dateMatch = response.match(
-        /(\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+\s+\d{4})/
-      );
-      if (dateMatch) {
-        setFlightInfo((prev) => ({ ...prev, date: dateMatch[0] }));
-      }
-    }
-  };
-
-  // Update the useEffect that handles listening state in Page.jsx
-  useEffect(() => {
-    // Make the circle change more immediate with direct DOM manipulation
-    const circle = document.querySelector(`.${styles.circle}`) as HTMLElement;
-    if (circle) {
-      if (userSpeaking) {
-        circle.classList.add(styles.listening);
-        circle.style.transition = "all 0.15s linear";
-      } else {
-        circle.classList.remove(styles.listening);
-        circle.style.transition = "all 0.3s linear";
-      }
-    }
-  }, [userSpeaking]);
 
   // Add this at the top of your component (after your useState declarations)
   useEffect(() => {
@@ -211,7 +171,9 @@ function Home() {
             <div className={styles.circleContainer}>
               <div
                 className={`${styles.circle} ${
-                  userSpeaking ? styles.listening : ""
+                  (!isSpeaking && responses.length > 0) || isRecording
+                    ? styles.listening
+                    : ""
                 }`}
                 style={{ marginTop: "-40px" }}
               ></div>
@@ -219,8 +181,10 @@ function Home() {
                 className={styles.listeningText}
                 style={{ marginTop: "-20px" }}
               >
-                {userSpeaking
+                {isRecording
                   ? "Listening..."
+                  : isProcessing
+                  ? "Processing.."
                   : isSpeaking
                   ? "Speaking..."
                   : ""}
@@ -228,7 +192,7 @@ function Home() {
             </div>
 
             {/* Text display with fixed height - hide when listening */}
-            {!userSpeaking && !isConversationActive && (
+            {!isRecording && !isConversationActive && (
               <div className={styles.promptContainer}>
                 <p
                   className={`${styles.prompt} ${
@@ -252,13 +216,13 @@ function Home() {
               }}
             >
               {/* Show the latest message */}
-              {messages.length > 0 &&
-                messages[messages.length - 1].type === "assistant" && (
+              {responses.length > 0 &&
+                responses[responses.length - 1].role === "assistant" && (
                   <div
                     className={`${styles.messageCard} ${styles.assistantMessage}`}
                   >
                     <div className={styles.messageContent}>
-                      {messages[messages.length - 1].content}
+                      {responses[responses.length - 1].content}
                     </div>
                   </div>
                 )}
@@ -267,7 +231,7 @@ function Home() {
           )}
 
           {/* Bottom section with fixed position - hide during listening */}
-          {!userSpeaking && (
+          {!isRecording && (
             <div className={styles.bottomSection}>
               <div className={styles.searchBarContainer}>
                 <input

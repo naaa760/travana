@@ -16,17 +16,19 @@ export default function useVoiceRecorder(
     {
       onSpeechStart: () => {
         console.log("🛫 Speech started");
+        setIsRecording(true);
         // startRecording();
       },
       onSpeechEnd: (audioFloat32) => {
         console.log("🛬 Speech ended");
+        setIsRecording(false);
         const blob = float32ToWavBlob(audioFloat32, 16000);
         handleRecordingStop(blob);
         // stopRecording();
       },
       startOnLoad: true,
       //   userSpeakingThreshold: 0.7, // optional tuning
-      //   minSpeechFrames: 5,
+      // minSpeechFrames: 5,
       //   preSpeechPadFrames: 10,
       model: "v5",
       //   workletOptions: {
