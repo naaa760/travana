@@ -20,19 +20,19 @@ export default function VoiceRecognition({
   const [transcript, setTranscript] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    checkMicrophonePermission();
+  // useEffect(() => {
+  //   checkMicrophonePermission();
 
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-      }
+  //   return () => {
+  //     if (streamRef.current) {
+  //       streamRef.current.getTracks().forEach((track) => track.stop());
+  //     }
 
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
+  //     if (timeoutRef.current) {
+  //       clearTimeout(timeoutRef.current);
+  //     }
+  //   };
+  // }, []);
 
   // Check if microphone permission is granted
   const checkMicrophonePermission = async () => {
@@ -54,6 +54,7 @@ export default function VoiceRecognition({
 
   // Function to notify listening state change
   useEffect(() => {
+    console.log("isRecording: ", isRecording);
     if (onListeningChange) {
       onListeningChange(isRecording);
     }
@@ -155,12 +156,93 @@ export default function VoiceRecognition({
     }
   }, [isListening]);
 
-  const startRecording = async () => {
-    console.log("Starting to listen...");
-    if (isProcessing) return;
+  const startRecording = () => {
+    console.log("Starting recording...");
+
+    if (!streamRef.current) {
+      console.error("No stream available for recording");
+      return;
+    }
+
+    let mimeType = "audio/webm";
+    if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
+      mimeType = "audio/webm;codecs=opus";
+    }
+
+    const mediaRecorder = new MediaRecorder(streamRef.current, {
+      mimeType: mimeType,
+      audioBitsPerSecond: 128000,
+    });
+
+    mediaRecorderRef.current = mediaRecorder;
+    chunksRef.current = [];
+
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) {
+        chunksRef.current.push(e.data);
+      }
+    };
+
+    mediaRecorder.onstop = async () => {
+      console.log("Recording stopped, processing audio...");
+      setIsProcessing(true);
+
+      if (chunksRef.current.length > 0) {
+        const audioBlob = new Blob(chunksRef.current, { type: mimeType });
+        console.log("Audio blob size:", audioBlob.size);
+
+        if (audioBlob.size > 100) {
+          const formData = new FormData();
+          formData.append("audio", audioBlob);
+
+          try {
+            const response = await fetch("/api/speech", {
+              method: "POST",
+              body: formData,
+            });
+
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+            const data = await response.json();
+            console.log("Transcript:", data);
+            if (data.transcript?.trim()) {
+              onTranscriptReceived(data.transcript);
+            }
+          } catch (err) {
+            console.error("Speech API error:", err);
+          }
+        } else {
+          console.warn("Audio too small to process");
+        }
+      }
+
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      }
+
+      setIsRecording(false);
+      setIsProcessing(false);
+
+      // Restart voice detection
+      timeoutRef.current = setTimeout(startMicrophoneAndDetectVoice, 1000);
+    };
+
+    mediaRecorder.start();
+    setIsRecording(true);
+
+    // Limit recording to max 8 seconds
+    setTimeout(() => {
+      if (mediaRecorderRef.current?.state === "recording") {
+        mediaRecorderRef.current.stop();
+      }
+    }, 8000);
+  };
+
+  const startMicrophoneAndDetectVoice = async () => {
+    console.log("Listening for voice to start recording...");
 
     try {
-      // Request microphone access
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
@@ -171,28 +253,6 @@ export default function VoiceRecognition({
 
       streamRef.current = stream;
 
-      // Create media recorder without any speech detection first
-      let mimeType = "audio/webm";
-      if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
-        mimeType = "audio/webm;codecs=opus";
-      }
-
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: mimeType,
-        audioBitsPerSecond: 128000,
-      });
-
-      mediaRecorderRef.current = mediaRecorder;
-      chunksRef.current = [];
-
-      // Handle microphone data
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          chunksRef.current.push(e.data);
-        }
-      };
-
-      // VOICE ACTIVITY DETECTION - Using RMS power instead of frequency bins
       const audioContext = new AudioContext();
       const analyser = audioContext.createAnalyser();
       const microphone = audioContext.createMediaStreamSource(stream);
@@ -201,139 +261,66 @@ export default function VoiceRecognition({
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
 
-      // Use a counter to reduce sensitivity - only change states after consistent readings
       let voiceDetectedCount = 0;
       let silenceCount = 0;
+      let recordingStarted = false;
 
       const detectVoice = () => {
         if (!streamRef.current) return;
 
-        analyser.getByteTimeDomainData(dataArray); // Get waveform data
+        analyser.getByteTimeDomainData(dataArray);
 
-        // Calculate RMS power - more accurate for voice detection
         let sumSquares = 0;
         for (let i = 0; i < bufferLength; i++) {
-          // Convert from 0-255 to -1 to 1
           const amplitude = (dataArray[i] - 128) / 128;
           sumSquares += amplitude * amplitude;
         }
         const rms = Math.sqrt(sumSquares / bufferLength);
-
-        // Convert to dB for easier thresholding
         const db = 20 * Math.log10(rms);
 
-        // Use a higher threshold to avoid false positives
-        // -35 dB might pick up background noise, so let's use -30 dB
-        const threshold = -30;
+        const threshold = -30; // Adjust if needed
 
         if (db > threshold) {
-          // Voice detected - turn blue IMMEDIATELY
-          if (!isRecording) {
-            setIsRecording(true);
-          }
-
-          // Reset silence counter
-          silenceCount = 0;
           voiceDetectedCount++;
+          silenceCount = 0;
+
+          if (voiceDetectedCount > 2 && !recordingStarted) {
+            console.log("Voice detected, starting recording...");
+            recordingStarted = true;
+            startRecording();
+          }
         } else {
-          // No voice detected
           silenceCount++;
           voiceDetectedCount = 0;
 
-          // Wait for 15 frames of silence (about 250ms) before turning off
-          if (silenceCount >= 15 && isRecording) {
-            setIsRecording(false);
+          // Optional: if long silence detected without starting, reset
+          if (silenceCount > 100 && !recordingStarted) {
+            console.log("No voice detected for a while, still waiting...");
+            silenceCount = 0;
           }
         }
 
-        // Continue detection loop
-        if (streamRef.current) {
+        if (streamRef.current && !recordingStarted) {
           requestAnimationFrame(detectVoice);
         }
       };
 
-      // Start voice detection loop
       detectVoice();
-
-      // Handle recording stop
-      mediaRecorder.onstop = async () => {
-        setIsProcessing(true);
-        console.log("Recording stopped, processing audio...");
-
-        // Only process if we have audio data
-        if (chunksRef.current.length > 0) {
-          const audioBlob = new Blob(chunksRef.current, { type: mimeType });
-          console.log("Audio blob size:", audioBlob.size);
-
-          // Only send to API if the blob has a reasonable size (not empty)
-          if (audioBlob.size > 100) {
-            const formData = new FormData();
-            formData.append("audio", audioBlob);
-
-            try {
-              console.log("Sending audio to API...");
-              const response = await fetch("/api/speech", {
-                method: "POST",
-                body: formData,
-              });
-
-              if (!response.ok) {
-                throw new Error(`API response error: ${response.status}`);
-              }
-
-              const data = await response.json();
-              console.log("Received transcript:", data);
-
-              if (data.transcript && data.transcript.trim()) {
-                onTranscriptReceived(data.transcript);
-              } else {
-                console.warn("Empty transcript received");
-              }
-            } catch (error) {
-              console.error("Error processing speech:", error);
-            }
-          } else {
-            console.warn("Audio blob too small to process");
-          }
-        } else {
-          console.warn("No audio chunks collected");
-        }
-
-        // Clean up the stream
-        if (streamRef.current) {
-          streamRef.current.getTracks().forEach((track) => track.stop());
-          streamRef.current = null;
-        }
-
-        // Reset state
-        setIsRecording(false);
-        setIsProcessing(false);
-
-        // Auto restart listening after a short delay
-        timeoutRef.current = setTimeout(() => {
-          startRecording();
-        }, 1000);
-      };
-
-      // Start recording
-      mediaRecorder.start();
-
-      // Record for 8 seconds max
-      setTimeout(() => {
-        if (
-          mediaRecorderRef.current &&
-          mediaRecorderRef.current.state === "recording"
-        ) {
-          mediaRecorderRef.current.stop();
-        }
-      }, 8000);
     } catch (error) {
-      console.error("Error starting recording:", error);
-
-      // Try again after a delay
-      timeoutRef.current = setTimeout(startRecording, 3000);
+      console.error("Error accessing microphone:", error);
+      timeoutRef.current = setTimeout(startMicrophoneAndDetectVoice, 3000);
     }
   };
+
+  useEffect(() => {
+    startMicrophoneAndDetectVoice();
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
 
   function processAudioResult(result) {
     console.log("Processing audio result:", result);

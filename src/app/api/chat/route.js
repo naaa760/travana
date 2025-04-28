@@ -2,7 +2,14 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    const { message } = await request.json();
+    const { messages } = await request.json();
+
+    if (!messages || !Array.isArray(messages)) {
+      return NextResponse.json(
+        { message: "Invalid request body" },
+        { status: 400 }
+      );
+    }
 
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
@@ -20,10 +27,7 @@ export async function POST(request) {
               content:
                 "You are TRAVANA, an AI travel assistant that helps users book flights and hotels. Keep all responses EXTREMELY brief, under 1-2 sentences, and focused on answering the user's question directly. Never use more than 10-15 words. Be concise but friendly. Do not add any extra information beyond what was asked.",
             },
-            {
-              role: "user",
-              content: message,
-            },
+            ...messages.slice(-10),
           ],
           temperature: 0.7,
           max_tokens: 60,
@@ -32,7 +36,9 @@ export async function POST(request) {
     );
 
     const data = await response.json();
-    return NextResponse.json(data);
+    const assistantMessage =
+      data?.choices?.[0]?.message?.content ?? "No response.";
+    return NextResponse.json(assistantMessage);
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
